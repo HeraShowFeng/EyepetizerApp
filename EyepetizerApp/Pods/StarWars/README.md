@@ -5,31 +5,35 @@ This component implements transition animation to crumble view-controller into t
 
 [![Yalantis](https://raw.githubusercontent.com/Yalantis/PullToRefresh/develop/PullToRefreshDemo/Resources/badge_dark.png)](https://yalantis.com/?utm_source=github)
 
-<img src="https://yalantis.com/media/content/ckeditor/2015/10/20/star_wars-shot.gif" />
+![Preview](preview.gif)
+
 Check this <a href="https://dribbble.com/shots/2109991-Star-Wars-App-concept">project on dribbble</a>.
 
 Also, read how it was done in [our blog](https://yalantis.com/blog/uidynamics-uikit-or-opengl-3-types-of-ios-animations-for-the-star-wars/)
 
-##Requirements
-- iOS 8.0+
-- Xcode 7
-- Swift 2
+## Requirements
 
-##Installing with [CocoaPods](https://cocoapods.org)
+- iOS 8.0+
+- Xcode 9
+- Swift 3
+
+## Installing with [CocoaPods](https://cocoapods.org)
 
 ```ruby
 use_frameworks!
-pod 'StarWars', '~> 1.0'
+pod 'StarWars', '~> 2.0'
 ```
 
-##Usage
+## Usage
 
 At first, import StarWars:
+
 ```swift
 import StarWars
 ```
 
 Then just implement class of *UIViewControllerTransitioningDelegate* that will return our animation form method *animationControllerForDismissedController* and assign it to *transitioningDelegate* of viewController that you want to dismiss.
+
 ```swift
 override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     let destination = segue.destinationViewController
@@ -51,6 +55,12 @@ animator.spriteWidth = 8
 ```
 
 Have fun! :)
+
+#### Let us know!
+
+We’d be really happy if you sent us links to your projects where you use our component. Just send an email to github@yalantis.com And do let us know if you have any questions or suggestion regarding the animation. 
+
+P.S. We’re going to publish more awesomeness wrapped in code and a tutorial on how to make UI for iOS (Android) better than better. Stay tuned!
 
 ## License
 

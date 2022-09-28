@@ -11,38 +11,38 @@ import UIKit
 /// 自定义导航栏控制器。。 集成子UINavigationController 实现手势返回操作
 class EYENavigationController : UINavigationController, UIGestureRecognizerDelegate, UINavigationControllerDelegate {
     override func viewDidLoad() {
-        if respondsToSelector(Selector("interactivePopGestureRecognizer")) {
+        if self.delegate!.responds(to: Selector("interactivePopGestureRecognizer")) {
             interactivePopGestureRecognizer?.delegate = self
-            self.navigationBar.titleTextAttributes = ["Font" : UIFont.customFont_Lobster(fontSize: UIConstant.UI_FONT_16)]
+            self.navigationBar.titleTextAttributes = [NSAttributedStringKey.init(rawValue: "Font") : UIFont.customFont_Lobster(fontSize: UIConstant.UI_FONT_16)]
             delegate = self
         }
-        navigationBar.tintColor = UIColor.blackColor()
-        navigationBar.barStyle = UIBarStyle.Default
+        navigationBar.tintColor = UIColor.black
+        navigationBar.barStyle = UIBarStyle.default
     }
 
-    override func pushViewController(viewController: UIViewController, animated: Bool) {
-        if respondsToSelector(Selector("interactivePopGestureRecognizer")) && animated {
-            interactivePopGestureRecognizer?.enabled = false
+    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        if self.delegate!.responds(to: Selector("interactivePopGestureRecognizer")) && animated {
+            interactivePopGestureRecognizer?.isEnabled = false
         }
         
         super.pushViewController(viewController, animated: animated)
     }
     
-    override func popViewControllerAnimated(animated: Bool) -> UIViewController? {
-        return super.popViewControllerAnimated(animated)
+    override func popViewController(animated: Bool) -> UIViewController? {
+        return super.popViewController(animated: animated)
     }
     
-    override func popToRootViewControllerAnimated(animated: Bool) -> [UIViewController]? {
-        if respondsToSelector(Selector("interactivePopGestureRecognizer")) && animated {
-            interactivePopGestureRecognizer?.enabled = false
+    override func popToRootViewController(animated: Bool) -> [UIViewController]? {
+        if self.delegate!.responds(to: Selector("interactivePopGestureRecognizer")) && animated {
+            interactivePopGestureRecognizer?.isEnabled = false
         }
         
-        return super.popToRootViewControllerAnimated(animated)
+        return super.popToRootViewController(animated: animated)
     }
     
-    override func popToViewController(viewController: UIViewController, animated: Bool) -> [UIViewController]? {
-        if respondsToSelector(Selector("interactivePopGestureRecognizer")) && animated {
-            interactivePopGestureRecognizer?.enabled = false
+    override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+        if self.delegate!.responds(to: Selector("interactivePopGestureRecognizer")) && animated {
+            interactivePopGestureRecognizer?.isEnabled = false
         }
         
         return super.popToViewController(viewController, animated: false)
@@ -50,8 +50,8 @@ class EYENavigationController : UINavigationController, UIGestureRecognizerDeleg
     
     //MARK: - UINavigationControllerDelegate
     func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
-        if respondsToSelector(Selector("interactivePopGestureRecognizer")) {
-            interactivePopGestureRecognizer?.enabled = true
+        if self.delegate!.responds(to: Selector("interactivePopGestureRecognizer")) {
+            interactivePopGestureRecognizer?.isEnabled = true
         }
     }
     //MARK: - UIGestureRecognizerDelegate

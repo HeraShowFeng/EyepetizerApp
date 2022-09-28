@@ -1,97 +1,171 @@
-#APESuperHUD
+# APESuperHUD
 A simple way to display a HUD with a message or progress information in your application.
 
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/16682908/12681053/f4974f7e-c6ac-11e5-972e-f234200872aa.gif" alt="APESuperHUD">
-  <img src="https://cloud.githubusercontent.com/assets/16682908/12681280/1c018a6a-c6ae-11e5-884e-d12a1a112f58.gif" alt="APESuperHUD">
+  <img src="https://cloud.githubusercontent.com/assets/6545513/19601280/eafb4b50-97a8-11e6-811b-23a6e9d92234.gif" alt="APESuperHUD">
 </p>
 
-##Features
+## Features
 - Simplicity.
 - Customizable. See [Change appearance](#change-appearance).
 - Fully written in Swift.
 - Unit tests.
 
-##Requirements
-- iOS 8 or later.
-- Xcode 7 or later.
+## Requirements
+- iOS 9 or later.
+- Xcode 9 (Swift 4.1) or later.
+  - For Swift 3.0 use version 1.1.3
+  - For Swift 2.2 use version 0.6
 
-##Installation
-####CocoaPods
-You can use [Cocoapods](http://cocoapods.org/) to install `APESuperHUD` by adding it to your `Podfile`:
+## Installation
+#### CocoaPods
+You can use [CocoaPods](http://cocoapods.org/) to install `APESuperHUD` by adding it to your `Podfile`:
 ```ruby
-platform :ios, '8.0'
+platform :ios, '9.0'
 use_frameworks!
 
 target 'MyApp' do
     pod 'APESuperHUD', :git => 'https://github.com/apegroup/APESuperHUD.git'
 end
 ```
-Note that this requires CocoaPods version 36, and your iOS deployment target to be at least 8.0:
+Note that this requires CocoaPods version 36, and your iOS deployment target to be at least 9.0:
 
-####Carthage
+#### Carthage
 You can use [Carthage](https://github.com/Carthage/Carthage) to install `APESuperHUD` by adding it to your `Cartfile`:
 ```
 github "apegroup/APESuperHUD"
 ```
 
-##Usage
+## Usage
 Don't forget to import.
 ```swift
 import APESuperHUD
 ```
-####Show message HUD
-######With default icon
+#### Show hud with icon
 ```swift
-APESuperHUD.showOrUpdateHUD(.Email, message: "1 new message", duration: 3.0, presentingView: self.view, completion: { _ in
-    // Completed
+let image = UIImage(named: "apegroup")!
+APESuperHUD.show(style: .icon(image: image, duration: 3.0), title: "Hello", message: "world")
+
+// Or create a instance of APESuperHud
+
+/*
+let hudViewController = APESuperHUD(style: .icon(image: image, duration: 3), title: "Hello", message: "world")
+present(hudViewController, animated: true)
+*/
+```
+#### Show hud with loading indicator
+```swift
+APESuperHUD.show(style: .loadingIndicator(type: .standard), title: nil, message: "Loading...")
+
+DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+    APESuperHUD.dismissAll(animated: true)
+})
+
+// Or create a instance of APESuperHud
+
+/*
+let hudViewController = APESuperHUD(style: .loadingIndicator(type: .standard), title: nil, message: "Loading...")
+present(hudViewController, animated: true)
+
+DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+    hudViewController.dismiss(animated: true)
+})
+*/
+```
+#### Show hud with title and message
+```swift
+APESuperHUD.show(style: .textOnly, title: "Hello", message: "world")
+
+DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+    APESuperHUD.dismissAll(animated: true)
+})
+
+// Or create a instance of APESuperHud
+
+/*
+let hudViewController = APESuperHUD(style: .textOnly, title: "Hello", message: "world")
+present(hudViewController, animated: true)
+
+DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+    hudViewController.dismiss(animated: true)
+})
+*/
+```
+#### Show hud with updates
+```swift
+APESuperHUD.show(style: .loadingIndicator(type: .standard), title: nil, message: "Loading...")
+
+DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+    APESuperHUD.show(style: .textOnly, title: "Done loading", message: nil)
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+        let image = UIImage(named: "apegroup")!
+        APESuperHUD.show(style: .icon(image: image, duration: 3.0), title: nil, message: nil)
+    })
 })
 ```
-######With custom image
+#### Change appearance
 ```swift
-APESuperHUD.showOrUpdateHUD(UIImage(named: "apegroup")!, message: "Demo message", duration: 3.0, presentingView: self.view, completion: { _ in
-    / Completed
-})
+/// Text color of the title text inside the HUD
+HUDAppearance.titleTextColor = UIColor.black
+
+/// Text color of the message text inside the HUD
+HUDAppearance.messageTextColor = UIColor.black
+
+/// The color of the icon in the HUD
+HUDAppearance.iconColor = UIColor.black
+
+/// The background color of the view where the HUD is presented
+HUDAppearance.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+
+/// The background color of the HUD view
+HUDAppearance.foregroundColor = UIColor.white
+
+/// The color of the loading indicator
+HUDAppearance.loadingActivityIndicatorColor = UIColor.gray
+
+/// The corner radius of the HUD
+HUDAppearance.cornerRadius = 10.0
+
+/// Enables/disables shadow effect around the HUD
+HUDAppearance.shadow = true
+
+/// The shadow color around the HUD
+HUDAppearance.shadowColor = UIColor.black
+
+/// The shadow offset around the HUD
+HUDAppearance.shadowOffset = CGSize(width: 0, height: 0)
+
+/// The shadow radius around the HUD
+HUDAppearance.shadowRadius = 6.0
+
+/// The shadow opacity around the HUD
+HUDAppearance.shadowOpacity = 0.15
+
+/// Enables/disables removal of the HUD if the user taps on the screen
+HUDAppearance.cancelableOnTouch = true
+
+/// The info message font in the HUD
+HUDAppearance.messageFont = UIFont.systemFont(ofSize: 13, weight: .regular)
+
+/// The title font in the HUD
+HUDAppearance.titleFont = UIFont.systemFont(ofSize: 20, weight: .bold)
+
+/// The size of the icon inside the HUD
+HUDAppearance.iconSize = CGSize(width: 48, height: 48)
+
+/// The HUD size
+HUDAppearance.hudSize = CGSize(width: 144, height: 144)
+
+/// The HUD fade in duration
+HUDAppearance.animateInTime = 0.7
+
+/// The HUD fade out duration
+HUDAppearance.animateOutTime = 0.7
 ```
 
-####Show HUD with loading indicator
-######With loading text
-```swift
-APESuperHUD.showOrUpdateHUD(.Standard, message: "Demo loading...", presentingView: self.view, completion: nil)
-```
-######Without loading text
-```swift
-APESuperHUD.showOrUpdateHUD(.Standard, message: "", presentingView: self.view, completion: nil)
-```
-######With funny loading texts
-```swift
-APESuperHUD.showOrUpdateHUD(.Standard, funnyMessagesLanguage: .English, presentingView: self.view, completion: nil)
-```
-####Remove HUD
-```swift
-APESuperHUD.removeHUD(animated: true, presentingView: self.view, completion: { _ in
-    // Completed
-})
-```
-####Change appearance
-```swift
-APESuperHUD.appearance.cornerRadius = 12
-APESuperHUD.appearance.animateInTime = 1.0
-APESuperHUD.appearance.animateOutTime = 1.0
-APESuperHUD.appearance.backgroundBlurEffect = .None
-APESuperHUD.appearance.iconColor = UIColor.greenColor()
-APESuperHUD.appearance.textColor = UIColor.greenColor()
-APESuperHUD.appearance.loadingActivityIndicatorColor = UIColor.greenColor()
-APESuperHUD.appearance.defaultDurationTime = 4.0
-APESuperHUD.appearance.cancelableOnTouch = true
-APESuperHUD.appearance.iconWidth = 48
-APESuperHUD.appearance.iconHeight = 48
-APESuperHUD.appearance.fontName = "Caviar Dreams"
-APESuperHUD.appearance.fontSize = 14
-```
-
-##Contributing
+## Contributing
 All people are welcome to contribute. See CONTRIBUTING for details.
 
-##License
+## License
 APESuperHUD is released under the MIT license. See LICENSE for details.

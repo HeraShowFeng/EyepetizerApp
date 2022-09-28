@@ -19,7 +19,7 @@ extension Reusable {
 }
 
 public extension UICollectionView {
-    func registerClass<T : UICollectionView where T : Reusable>(cellClass : T.Type) {
-        self.registerClass(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
+    func registerClass<T : UICollectionView>(cellClass : T.Type) where T : Reusable {
+        self.register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
     }
 }

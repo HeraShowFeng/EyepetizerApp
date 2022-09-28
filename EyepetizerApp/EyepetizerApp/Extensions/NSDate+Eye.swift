@@ -21,9 +21,9 @@ extension NSDate {
      获取当前年月日
      */
     class func getCurrentDate() -> String {
-        let formatter : NSDateFormatter = NSDateFormatter()
-        formatter.dateFromString("yyyy-MM-dd")
-        return formatter.stringFromDate(NSDate())
+        let formatter : DateFormatter = DateFormatter()
+        formatter.date(from: "yyyy-MM-dd")
+        return formatter.string(from: NSDate() as Date)
     }
     
     /**
@@ -34,12 +34,12 @@ extension NSDate {
      - returns: 时间戳
      */
     class func change2TimeStamp(date : String) -> String {
-        let formatter : NSDateFormatter = NSDateFormatter()
-        formatter.dateFromString("yyyy-MM-dd")
-        formatter.dateStyle = .MediumStyle
-        formatter.timeStyle = .ShortStyle
+        let formatter : DateFormatter = DateFormatter()
+        formatter.date(from: "yyyy-MM-dd")
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
         
-        let dateNow = formatter.dateFromString(date)
+        let dateNow = formatter.date(from: date)
         return "\(dateNow?.timeIntervalSince1970)000"
     }
     
@@ -55,13 +55,13 @@ extension NSDate {
             return ""
         }
         
-        let newTimestamp = (timestamp as NSString).substringFromIndex(timestamp.length - 3)
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .MediumStyle
-        formatter.timeStyle = .ShortStyle
-        formatter.dateFromString("yyyy-MM-dd HH:mm:ss")
+        let newTimestamp = (timestamp as NSString).substring(from: timestamp.length - 3)
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        formatter.date(from: "yyyy-MM-dd HH:mm:ss")
         
         let dateStart = NSDate(timeIntervalSince1970: Double(newTimestamp)!)
-        return formatter.stringFromDate(dateStart)
+        return formatter.string(from: dateStart as Date)
     }
 }

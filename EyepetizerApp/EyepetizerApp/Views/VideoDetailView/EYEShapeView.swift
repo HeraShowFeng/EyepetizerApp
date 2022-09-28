@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EYEShapeView: UIView {
+class EYEShapeView: UIView, CAAnimationDelegate {
     
     var pathLayer : CAShapeLayer!
     
@@ -27,7 +27,7 @@ class EYEShapeView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         
         font = UIFont.customFont_FZLTXIHJW()
         fontSize = UIConstant.UI_FONT_12
@@ -40,17 +40,17 @@ class EYEShapeView: UIView {
     private func setupDefaultLayer() -> CAShapeLayer {
         
         // 创建字体
-        let letters = CGPathCreateMutable()
-        let font = CTFontCreateWithName("HelveticaNeue-UltraLight", self.fontSize, nil)
-        let attrString = NSAttributedString(string: animationString, attributes: [kCTFontAttributeName as String: font])
+        let letters = CGMutablePath()
+        let font = CTFontCreateWithName("HelveticaNeue-UltraLight" as CFString, self.fontSize, nil)
+        let attrString = NSAttributedString(string: animationString, attributes: [kCTFontAttributeName as NSAttributedStringKey: font])
         
         let line = CTLineCreateWithAttributedString(attrString)
         let runArray = CTLineGetGlyphRuns(line)
         // for each RUN
         for runIndex in 0..<CFArrayGetCount(runArray) {
             // Get FONT for this run
-            let run = unsafeBitCast(CFArrayGetValueAtIndex(runArray, runIndex), CTRunRef.self)
-            let runFont = unsafeBitCast(CFDictionaryGetValue(CTRunGetAttributes(run), unsafeBitCast(kCTFontAttributeName, UnsafePointer<Void>.self)), CTFontRef.self)
+            let run = unsafeBitCast(CFArrayGetValueAtIndex(runArray, runIndex), to: CTRun.self)
+            let runFont = unsafeBitCast(CFDictionaryGetValue(CTRunGetAttributes(run), unsafeBitCast(kCTFontAttributeName, to: UnsafePointer<Void>.self)), to: CTFont.self)
             // for each GLYPH in run
             for runGlyphIndex in 0..<CTRunGetGlyphCount(run) {
                 let thisGlyphRange = CFRangeMake(runGlyphIndex, 1)
@@ -60,22 +60,22 @@ class EYEShapeView: UIView {
                 CTRunGetPositions(run, thisGlyphRange, &position)
                 // Get PATH of outline
                 let letter = CTFontCreatePathForGlyph(runFont, glyph, nil)
-                var t = CGAffineTransformMakeTranslation(position.x, position.y)
-                CGPathAddPath(letters, &t, letter);
+                var t = CGAffineTransform(translationX: position.x, y: position.y)
+//                CGPathAddPath(letters, &t, letter);
             }
         }
         
         // create path
         let path = UIBezierPath()
-        path.moveToPoint(CGPointZero)
-        path.appendPath(UIBezierPath(CGPath: letters))
+        path.move(to: CGPoint.zero)
+        path.append(UIBezierPath(cgPath: letters))
         
         let pathLayer = CAShapeLayer()
         pathLayer.frame = self.bounds
-        pathLayer.bounds = CGPathGetBoundingBox(path.CGPath)
-        pathLayer.geometryFlipped = true
-        pathLayer.path = path.CGPath
-        pathLayer.strokeColor = UIColor.whiteColor().CGColor
+        pathLayer.bounds = path.cgPath.boundingBox
+        pathLayer.isGeometryFlipped = true
+        pathLayer.path = path.cgPath
+        pathLayer.strokeColor = UIColor.white.cgColor
         pathLayer.fillColor = nil
         pathLayer.strokeEnd = 1
         pathLayer.lineWidth = 1.0
@@ -94,8 +94,8 @@ class EYEShapeView: UIView {
         animation.fromValue = 0.0
         animation.toValue = 1.0
         animation.duration = 0.5
-        animation.removedOnCompletion = false
-        self.pathLayer.addAnimation(animation, forKey: animation.keyPath)
+        animation.isRemovedOnCompletion = false
+        self.pathLayer.add(animation, forKey: animation.keyPath)
     }
     
     /**
