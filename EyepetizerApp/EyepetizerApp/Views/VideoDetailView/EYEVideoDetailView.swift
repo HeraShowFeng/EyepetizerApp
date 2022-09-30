@@ -49,20 +49,20 @@ class EYEVideoDetailView: UIView {
         didSet {
 //            self.albumImageView.yy_setImageWithURL(NSURL(string: model.feed), placeholder: UIImage.colorImage(UIColor.lightGrayColor(), size: albumImageView.size))
 //            self.albumImageView.yy_setImageWithURL(NSURL(string: model.feed), options: .ProgressiveBlur)
-            self.blurImageView.yy_setImageWithURL(NSURL(string:model.feed), placeholder: UIImage(named: "7e42a62065ef37cfa233009fb364fd1e_0_0"))
+            self.blurImageView.yy_setImage(with: NSURL(string:model.feed) as URL?, placeholder: UIImage(named: "7e42a62065ef37cfa233009fb364fd1e_0_0"))
             videoTitleLabel.animationString = model.title
             self.classifyLabel.text = model.subTitle
             
             // 显示底部数据
-            self.itemArray.first?.setTitle("\(model.collectionCount)", forState: .Normal)
-            self.itemArray[1].setTitle("\(model.shareCount)", forState: .Normal)
-            self.itemArray[2].setTitle("\(model.replyCount)", forState: .Normal)
-            self.itemArray.last?.setTitle("缓存", forState: .Normal)
+            self.itemArray.first?.setTitle("\(model.collectionCount)", for: .normal)
+            self.itemArray[1].setTitle("\(model.shareCount)", for: .normal)
+            self.itemArray[2].setTitle("\(model.replyCount)", for: .normal)
+            self.itemArray.last?.setTitle("缓存", for: .normal)
             
             // 计算宽度
             self.describeLabel.text = model.description
-            let size = self.describeLabel.boundingRectWithSize(describeLabel.size)
-            self.describeLabel.frame = CGRectMake(describeLabel.x, describeLabel.y, size.width, size.height)
+            let size = self.describeLabel.boundingRectWithSize(size: describeLabel.size)
+            self.describeLabel.frame = CGRect.init(x: describeLabel.x, y: describeLabel.y, width: size.width, height: size.height)
         }
     }
     //MARK: --------------------------- Event response --------------------------
@@ -96,8 +96,8 @@ class EYEVideoDetailView: UIView {
 //        let imageViewH = self.width*photoH / UIConstant.IPHONE6_WIDTH
         var albumImageView = UIImageView(frame: CGRect(x: -albumImageViewX, y: 0, width: albumImageViewW, height: albumImageViewH))
         albumImageView.clipsToBounds = true
-        albumImageView.contentMode = .ScaleAspectFill
-        albumImageView.userInteractionEnabled = true
+        albumImageView.contentMode = .scaleAspectFill
+        albumImageView.isUserInteractionEnabled = true
         return albumImageView
     }()
     
@@ -108,7 +108,7 @@ class EYEVideoDetailView: UIView {
     }()
     
     lazy var blurView : UIVisualEffectView = {
-        let blurEffect : UIBlurEffect = UIBlurEffect(style: .Light)
+        let blurEffect : UIBlurEffect = UIBlurEffect(style: .light)
         var blurView = UIVisualEffectView(effect: blurEffect)
         blurView.frame = self.blurImageView.frame
         return blurView
@@ -117,8 +117,8 @@ class EYEVideoDetailView: UIView {
     // 返回按钮
     lazy var backBtn : UIButton = {
         var backBtn = UIButton(frame: CGRect(x: UIConstant.UI_MARGIN_10, y: UIConstant.UI_MARGIN_20, width: 40, height: 40))
-        backBtn.setImage(UIImage(named: "play_back_full"), forState: .Normal)
-        backBtn.addTarget(self, action: #selector(EYEVideoDetailView.backBtnDidClick), forControlEvents: .TouchUpInside)
+        backBtn.setImage(UIImage(named: "play_back_full"), for: .normal)
+        backBtn.addTarget(self, action: #selector(EYEVideoDetailView.backBtnDidClick), for: .touchUpInside)
         return backBtn
     }()
     // 播放按钮
@@ -126,14 +126,14 @@ class EYEVideoDetailView: UIView {
         var playImageView = UIImageView(image: UIImage(named: "ic_action_play"))
         playImageView.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
         playImageView.center = self.albumImageView.center
-        playImageView.contentMode = .ScaleAspectFit
-        playImageView.viewAddTarget(self, action: #selector(EYEVideoDetailView.playImageViewDidClick))
+        playImageView.contentMode = .scaleAspectFit
+        playImageView.viewAddTarget(target: self, action: #selector(EYEVideoDetailView.playImageViewDidClick))
         return playImageView
     }()
     
     // 标题
     lazy var videoTitleLabel : EYEShapeView = {
-        let rect = CGRect(x: UIConstant.UI_MARGIN_10, y: CGRectGetMaxY(self.albumImageView.frame)+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 20)
+        let rect = CGRect(x: UIConstant.UI_MARGIN_10, y: self.albumImageView.frame.maxY+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 20)
         let font = UIFont.customFont_FZLTZCHJW(fontSize: UIConstant.UI_FONT_16)
         var videoTitleLabel = EYEShapeView(frame: rect)
         videoTitleLabel.font = font
@@ -143,31 +143,31 @@ class EYEVideoDetailView: UIView {
     
     // 分割线
     private lazy var lineView : UIView = {
-        var lineView = UIView(frame: CGRect(x: UIConstant.UI_MARGIN_10, y: CGRectGetMaxY(self.videoTitleLabel.frame)+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 0.5))
-        lineView.backgroundColor = UIColor.whiteColor()
+        var lineView = UIView(frame: CGRect(x: UIConstant.UI_MARGIN_10, y: self.videoTitleLabel.frame.maxY+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 0.5))
+        lineView.backgroundColor = UIColor.white
         return lineView
     }()
     
     // 分类/时间
     lazy var classifyLabel : UILabel = {
-        var classifyLabel = UILabel(frame: CGRect(x: UIConstant.UI_MARGIN_10, y: CGRectGetMaxY(self.lineView.frame)+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 20))
-        classifyLabel.textColor = UIColor.whiteColor()
+        var classifyLabel = UILabel(frame: CGRect(x: UIConstant.UI_MARGIN_10, y: self.lineView.frame.maxY+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 20))
+        classifyLabel.textColor = UIColor.white
         classifyLabel.font = UIFont.customFont_FZLTXIHJW(fontSize: UIConstant.UI_FONT_13)
         return classifyLabel
     }()
     
     // 描述
     lazy var describeLabel : UILabel = {
-        var describeLabel = UILabel(frame: CGRect(x: UIConstant.UI_MARGIN_10, y: CGRectGetMaxY(self.classifyLabel.frame)+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 200))
+        var describeLabel = UILabel(frame: CGRect(x: UIConstant.UI_MARGIN_10, y: self.classifyLabel.frame.maxY+UIConstant.UI_MARGIN_10, width: self.width-2*UIConstant.UI_MARGIN_10, height: 200))
         describeLabel.numberOfLines = 0
-        describeLabel.textColor = UIColor.whiteColor()
+        describeLabel.textColor = UIColor.white
         describeLabel.font = UIFont.customFont_FZLTXIHJW(fontSize: UIConstant.UI_FONT_13)
         return describeLabel
     }()
     // 底部 喜欢 分享 评论 缓存
     lazy var bottomToolView : UIView = {
         var bottomToolView = UIView(frame: CGRect(x: 0, y: self.height-50, width: self.width, height: 30))
-        bottomToolView.backgroundColor = UIColor.clearColor()
+        bottomToolView.backgroundColor = UIColor.clear
         return bottomToolView
     }()
     
@@ -184,9 +184,9 @@ class EYEVideoDetailView: UIView {
         
         override init(frame: CGRect) {
             super.init(frame: frame)
-            self.backgroundColor = UIColor.clearColor()
+            self.backgroundColor = UIColor.clear
             self.titleLabel?.font = UIFont.customFont_FZLTXIHJW()
-            self.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            self.setTitleColor(UIColor.white, for: .normal)
         }
         
         convenience init(frame: CGRect, title: String, image: UIImage) {
@@ -194,8 +194,8 @@ class EYEVideoDetailView: UIView {
             self.title = title
             self.image = image
             
-            self.setImage(image, forState: .Normal)
-            self.setTitle(title, forState: .Normal)
+            self.setImage(image, for: .normal)
+            self.setTitle(title, for: .normal)
         }
         
         required init?(coder aDecoder: NSCoder) {

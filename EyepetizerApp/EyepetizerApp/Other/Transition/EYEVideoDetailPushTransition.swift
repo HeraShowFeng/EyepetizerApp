@@ -12,7 +12,7 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
     private var toVC : EYEVideoDetailController!
     private var fromVC : EYEBaseViewController!
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
     
@@ -89,7 +89,7 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
             self.titleAnimation()
             self.subTitleAnimation()
             // 还原图片
-            fromVC.selectCell.backgroundImageView.hidden = false
+            fromVC.selectCell.backgroundImageView.isHidden = false
             fromVC.selectCell.coverButton.alpha = 0.3
             fromVC.selectCell.titleLabel.alpha = 1
             fromVC.selectCell.subTitleLabel.alpha = 1
@@ -99,11 +99,11 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
         }
 
         // tabbar 延迟0.2秒动画
-        UIView.animateWithDuration(0.1, delay: 0.2, options: .CurveLinear, animations: {
+        UIView.animate(withDuration: 0.1, delay: 0.2, options: .curveLinear, animations: {
             tabbarSnapshotView?.y = UIConstant.SCREEN_HEIGHT
             fromVC.navigationController?.navigationBar.y = -UIConstant.UI_NAV_HEIGHT
             }) { (_) -> Void in
-                fromVC.navigationController?.navigationBarHidden = true
+                fromVC.navigationController?.isNavigationBarHidden = true
         }
 
     }
@@ -113,7 +113,7 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
      */
     private func playBtnAnimation() {
         let playView = toVC.detailView.playImageView
-        UIView.transitionWithView(playView, duration: 0.5, options: .CurveEaseOut, animations: {
+        UIView.transition(with: playView, duration: 0.5, options: .curveEaseOut, animations: {
             self.toVC.detailView.playImageView.alpha = 1
             self.toVC.detailView.backBtn.alpha = 1
             }, completion: nil)
@@ -131,7 +131,7 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
      描述文字动画
      */
     private func subTitleAnimation() {
-        UIView.animateWithDuration(0.3, delay: 0.5, options: .CurveEaseInOut, animations: {
+        UIView.animate(withDuration: 0.3, delay: 0.5, options: .curveEaseInOut, animations: {
             self.toVC.detailView.classifyLabel.alpha = 1
             self.toVC.detailView.describeLabel.alpha = 1
             self.toVC.detailView.bottomToolView.alpha = 1

@@ -12,7 +12,7 @@ class EYEChoiceHeaderView: UICollectionReusableView, Reusable {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white
         
         self.addSubview(titleLabel)
         self.addSubview(imageView)
@@ -30,12 +30,12 @@ class EYEChoiceHeaderView: UICollectionReusableView, Reusable {
     var title : String? {
         didSet {
             if let _ = title {
-                self.imageView.hidden = true
-                self.titleLabel.hidden = false
+                self.imageView.isHidden = true
+                self.titleLabel.isHidden = false
                 self.titleLabel.text = title!
             } else {
-                self.imageView.hidden = false
-                self.titleLabel.hidden = true
+                self.imageView.isHidden = false
+                self.titleLabel.isHidden = true
             }
         }
     }
@@ -43,12 +43,12 @@ class EYEChoiceHeaderView: UICollectionReusableView, Reusable {
     var image : String? {
         didSet {
             if let _ = image {
-                self.titleLabel.hidden = true
-                self.imageView.hidden = false
                 self.imageView.yy_setImageWithURL(NSURL(string: image!)!, options: .ProgressiveBlur)
+                self.titleLabel.isHidden = true
+                self.imageView.isHidden = false
             } else {
-                self.titleLabel.hidden = false
-                self.imageView.hidden = true
+                self.titleLabel.isHidden = false
+                self.imageView.isHidden = true
             }
         }
     }
@@ -59,14 +59,14 @@ class EYEChoiceHeaderView: UICollectionReusableView, Reusable {
     
     private lazy var titleLabel : UILabel = {
         var titleLabel : UILabel = UILabel()
-        titleLabel.textAlignment = .Center
+        titleLabel.textAlignment = .center
         titleLabel.font = UIFont.customFont_Lobster(fontSize: UIConstant.UI_FONT_16)
         return titleLabel
     }()
     
     private lazy var imageView : UIImageView = {
         var imageView : UIImageView = UIImageView ()
-        imageView.contentMode = .ScaleAspectFit
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
 }

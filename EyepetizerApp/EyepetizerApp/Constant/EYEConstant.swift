@@ -14,8 +14,8 @@ struct UIConstant {
     static let IPHONE6_HEIGHT : CGFloat = 667
     static let IPHONE5_WIDTH : CGFloat = 320
     static let IPHONE5_HEIGHT : CGFloat = 568
-    static let SCREEN_WIDTH : CGFloat = UIScreen.mainScreen().bounds.width
-    static let SCREEN_HEIGHT : CGFloat = UIScreen.mainScreen().bounds.height
+    static let SCREEN_WIDTH : CGFloat = UIScreen.main.bounds.width
+    static let SCREEN_HEIGHT : CGFloat = UIScreen.main.bounds.height
     // 导航栏高度
     static let UI_NAV_HEIGHT : CGFloat = 64
     // tab高度

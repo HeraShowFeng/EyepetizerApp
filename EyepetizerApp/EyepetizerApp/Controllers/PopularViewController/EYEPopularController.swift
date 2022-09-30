@@ -19,11 +19,11 @@ class EYEPopularController: EYEBaseViewController, LoadingPresenter {
         self.view.addSubview(headerView)
     
         headerView.headerViewTitleDidClick { [unowned self](targetBtn, index) in
-            self.itemDidClick(index)
+            self.itemDidClick(index: index)
         }
         // 添加控制器
         // 默认选中第一个
-        itemDidClick(0)
+        itemDidClick(index: 0)
     }
     
     //MARK: --------------------------- Private Methods --------------------------
@@ -55,10 +55,10 @@ class EYEPopularController: EYEBaseViewController, LoadingPresenter {
         }
         self.addChildViewController(actionController)
         self.view.addSubview(actionController.view)
-        self.setupControllerFrame(actionController.view)
+        self.setupControllerFrame(view: actionController.view)
         // 动画
         if let currentVC = currentController {
-            startAnimation(currentVC, toVC: actionController)
+            startAnimation(fromVC: currentVC, toVC: actionController)
         } else {
             // 首次运行会来这里，将weekcontroller 赋值给当前控制器
             currentController = actionController
@@ -69,7 +69,7 @@ class EYEPopularController: EYEBaseViewController, LoadingPresenter {
     // 设置控制器frame
     private func startAnimation(fromVC: UIViewController, toVC: UIViewController) {
         toVC.view.alpha = 0
-        UIView.animateWithDuration(0.5, animations: {
+        UIView.animate(withDuration: 0.5, animations: {
             
             fromVC.view.alpha = 0
             toVC.view.alpha = 1

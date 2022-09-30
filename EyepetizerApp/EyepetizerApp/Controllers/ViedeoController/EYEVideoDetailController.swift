@@ -13,19 +13,19 @@ class EYEVideoDetailController: UIViewController {
     var model : ItemModel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         // 隐藏导航栏
-        self.navigationController?.navigationBarHidden = true
+        self.navigationController?.isNavigationBarHidden = true
         // 添加view
         self.view.addSubview(detailView)
         detailView.model = model
         navigationController?.delegate = self
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem.barButtonItemWithImg(UIImage(named: "ic_action_back"), selectorImg: nil, target: self, action: #selector(EYEVideoDetailController.leftBtnDidClick))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.barButtonItemWithImg(image: UIImage(named: "ic_action_back"), selectorImg: nil, target: self, action: #selector(EYEVideoDetailController.leftBtnDidClick))
         
         //手势监听器
-        let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(EYEVideoDetailController.edgePanGesture(_:)))
-        edgePan.edges = UIRectEdge.Left
+        let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(EYEVideoDetailController.edgePanGesture(edgePan:)))
+        edgePan.edges = UIRectEdge.left
         self.view.addGestureRecognizer(edgePan)
     }
     
@@ -42,23 +42,23 @@ class EYEVideoDetailController: UIViewController {
     
     //MARK: --------------------------- Event or Action --------------------------
     @objc private func leftBtnDidClick() {
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc private func edgePanGesture(edgePan: UIScreenEdgePanGestureRecognizer) {
-        let progress = edgePan.translationInView(self.view).x / self.view.bounds.width
+        let progress = edgePan.translation(in: self.view).x / self.view.bounds.width
         
-        if edgePan.state == UIGestureRecognizerState.Began {
+        if edgePan.state == UIGestureRecognizerState.began {
             self.percentDrivenTransition = UIPercentDrivenInteractiveTransition()
-            self.navigationController?.popViewControllerAnimated(true)
-        } else if edgePan.state == UIGestureRecognizerState.Changed {
-            self.percentDrivenTransition?.updateInteractiveTransition(progress)
-        } else if edgePan.state == UIGestureRecognizerState.Cancelled || edgePan.state == UIGestureRecognizerState.Ended {
+            self.navigationController?.popViewController(animated: true)
+        } else if edgePan.state == UIGestureRecognizerState.changed {
+            self.percentDrivenTransition?.update(progress)
+        } else if edgePan.state == UIGestureRecognizerState.cancelled || edgePan.state == UIGestureRecognizerState.ended {
             if progress > 0.5 {
-                self.percentDrivenTransition?.finishInteractiveTransition()
+                self.percentDrivenTransition?.finish()
                 panIsCancel = false
             } else {
-                self.percentDrivenTransition?.cancelInteractiveTransition()
+                self.percentDrivenTransition?.cancel()
                 panIsCancel = true
             }
             self.percentDrivenTransition = nil
@@ -80,7 +80,7 @@ class EYEVideoDetailController: UIViewController {
 
 extension EYEVideoDetailController: UINavigationControllerDelegate {
     func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if operation == .Pop {
+        if operation == .pop {
             return EYEVideoDetailPopTransition()
         } else {
             return nil
@@ -109,7 +109,7 @@ extension EYEVideoDetailController: EYEVideoDetailViewDelegate {
      点击返回按钮
     */
     func backBtnDidClick() {
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
 }
 

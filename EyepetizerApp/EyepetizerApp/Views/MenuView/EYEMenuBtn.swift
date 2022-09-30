@@ -26,8 +26,8 @@ class EYEMenuBtn: UIButton {
         super.init(frame: frame)
         
         self.titleLabel?.font = UIFont.customFont_Lobster()
-        self.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        self.setImage(UIImage(named: "ic_action_menu"), forState: .Normal)
+        self.setTitleColor(UIColor.black, for: .normal)
+        self.setImage(UIImage(named: "ic_action_menu"), for: .normal)
     }
     
     convenience init(frame: CGRect, type: EYEMenuBtnType) {
@@ -36,7 +36,7 @@ class EYEMenuBtn: UIButton {
         self.type = type
         
         if type == .Date {
-            self.setTitle("Today", forState: .Normal)
+            self.setTitle("Today", for: .normal)
         }
     }
     

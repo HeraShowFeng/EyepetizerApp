@@ -31,7 +31,7 @@ class EYEMainViewController: UITabBarController {
     }
     
     // - viewWillAppear -- 删除系统的tabbar
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 删除系统自带的导航按钮
         for button in self.tabBar.subviews {
@@ -50,9 +50,9 @@ class EYEMainViewController: UITabBarController {
         let discoverController = EYEDiscoverController()
         let popularController = EYEPopularController()
         
-        setupChildController(choiceController)
-        setupChildController(discoverController)
-        setupChildController(popularController)
+        setupChildController(vc: choiceController)
+        setupChildController(vc: discoverController)
+        setupChildController(vc: popularController)
     }
     /**
      设置更控制器
@@ -63,13 +63,13 @@ class EYEMainViewController: UITabBarController {
         vc.title = "Eyepetizer"
         // 包装一个navigationcontroller
         self.addChildViewController(EYENavigationController(rootViewController: vc))
-        self.view.bringSubviewToFront(vc.view)
+        self.view.bringSubview(toFront: vc.view)
     }
     /**
      launchview动画
      */
     private func launchViewRemoveAnimation() {
-        UIView.animateWithDuration(1, animations: {
+        UIView.animate(withDuration: 1, animations: {
             self.launchView.alpha = 0
             }) { [unowned self](_) in
                 self.launchView.removeFromSuperview()

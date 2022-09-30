@@ -15,13 +15,13 @@ class EYEDiscoverFlowLayout : UICollectionViewFlowLayout {
     private var width: CGFloat {
         get {
             let insets = collectionView!.contentInset
-            return CGRectGetWidth(collectionView!.bounds) - (insets.left + insets.right)
+            return collectionView!.bounds.width - (insets.left + insets.right)
         }
     }
     
     // collectionView section count
     private var numberOfSection : Int! {
-        return collectionView?.numberOfSections() ?? 0
+        return collectionView?.numberOfSections ?? 0
     }
     
     // 滚动区域
@@ -29,8 +29,8 @@ class EYEDiscoverFlowLayout : UICollectionViewFlowLayout {
         return CGSize(width: width, height: contentHeight)
     }
     
-    override func prepareLayout() {
-        super.prepareLayout()
+    override func prepare() {
+        super.prepare()
         
     }
 }

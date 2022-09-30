@@ -15,7 +15,7 @@ class EYEBaseViewController : UIViewController {
         super.viewDidLoad()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         navigationController?.delegate = self
@@ -25,7 +25,7 @@ class EYEBaseViewController : UIViewController {
 extension EYEBaseViewController : UINavigationControllerDelegate {
     func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        if operation == .Push && toVC is EYEVideoDetailController {
+        if operation == .push && toVC is EYEVideoDetailController {
             return EYEVideoDetailPushTransition()
         }
         return nil

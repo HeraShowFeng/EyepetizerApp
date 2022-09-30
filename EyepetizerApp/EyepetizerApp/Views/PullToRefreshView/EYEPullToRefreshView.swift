@@ -9,7 +9,7 @@
 import UIKit
 
 // 动画时间
-var animationDuration: NSTimeInterval = 0.3
+var animationDuration: TimeInterval = 0.3
 // 下拉刷新高度
 var pullToRefreshHeight: CGFloat = 80
 
@@ -42,8 +42,8 @@ class EYEPullToRefreshView: UIView {
         
     }
     
-    override func willMoveToSuperview(newSuperview: UIView?) {
-        super.willMoveToSuperview(newSuperview)
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
         
         // 移走旧的父控件
         if (self.superview != nil) {
@@ -51,7 +51,7 @@ class EYEPullToRefreshView: UIView {
         }
         // 新的父控件 添加监听器
         if (newSuperview != nil) {
-            newSuperview!.addObserver(self, forKeyPath: refreshContentOffset as String, options: NSKeyValueObservingOptions.New, context: nil)
+            newSuperview!.addObserver(self, forKeyPath: refreshContentOffset as String, options: NSKeyValueObservingOptions.new, context: nil)
             var rect:CGRect = self.frame
             // 设置宽度 位置
             rect.size.width = newSuperview!.frame.size.width
@@ -113,8 +113,8 @@ class EYEPullToRefreshView: UIView {
     // 刷新view
     var loadView: EYELoaderView!
     // 父控件
-    private var scrollView: UIScrollView!
-    private var scrollViewOriginalInset: UIEdgeInsets!
+    var scrollView: UIScrollView!
+    var scrollViewOriginalInset: UIEdgeInsets!
     
     // 刷新后回调
     var beginRefreshingCallback: beginRefreshingBlock?
@@ -159,8 +159,8 @@ class EYEPullToRefreshHeaderView: EYEPullToRefreshView {
     /**
      设置headerView的frame
      */
-    override func willMoveToSuperview(newSuperview: UIView!) {
-        super.willMoveToSuperview(newSuperview)
+    override func willMove(toSuperview newSuperview: UIView!) {
+        super.willMove(toSuperview: newSuperview)
         
         var rect:CGRect = self.frame
         rect.origin.y = -pullToRefreshHeight
@@ -170,7 +170,7 @@ class EYEPullToRefreshHeaderView: EYEPullToRefreshView {
     /**
      这个方法是这个Demo的核心。。监听scrollview的contentoffset属性。 属性变化就会调用。
      */
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         
         // 如果当前状态不是刷新状态
@@ -190,7 +190,7 @@ class EYEPullToRefreshHeaderView: EYEPullToRefreshView {
             return
         }
         // 根据scrollview 滑动的位置设置当前状态
-        if self.scrollView.dragging {
+        if self.scrollView.isDragging {
             let happenOffSetY = fabs(currentOffsetY)
             if state == .Normal && happenOffSetY > pullToRefreshHeight {
                 state = .Pulling
@@ -215,7 +215,7 @@ class EYEPullToRefreshHeaderView: EYEPullToRefreshView {
             switch state {
             case .Normal:
                 if PullToRefreshViewState.Refreshing == oldState {
-                    UIView.animateWithDuration(animationDuration, animations: {
+                    UIView.animate(withDuration: animationDuration, animations: {
                         var contentInset:UIEdgeInsets = self.scrollView.contentInset
                         contentInset.top = self.scrollViewOriginalInset.top+UIConstant.UI_NAV_HEIGHT
                         self.scrollView.contentInset = contentInset
@@ -226,7 +226,7 @@ class EYEPullToRefreshHeaderView: EYEPullToRefreshView {
             case .Pulling:
                 break;
             case .Refreshing:
-                UIView.animateWithDuration(animationDuration, animations: {
+                UIView.animate(withDuration: animationDuration, animations: {
                     let top:CGFloat = self.scrollViewOriginalInset.top + self.frame.size.height
                     var inset:UIEdgeInsets = self.scrollView.contentInset
                     inset.top = top+UIConstant.UI_NAV_HEIGHT
@@ -248,17 +248,17 @@ class EYEPullToRefreshFooterView: EYEPullToRefreshView {
      创建脚部静态方法
      */
     class func footerView() -> EYEPullToRefreshFooterView {
-        return EYEPullToRefreshFooterView(frame: CGRectMake(0, 0, UIConstant.SCREEN_WIDTH, pullToRefreshHeight))
+        return EYEPullToRefreshFooterView(frame: CGRect.init(x: 0, y: 0, width: UIConstant.SCREEN_WIDTH, height: pullToRefreshHeight))
     }
     
-    override func willMoveToSuperview(newSuperview: UIView!) {
-        super.willMoveToSuperview(newSuperview)
+    override func willMove(toSuperview newSuperview: UIView!) {
+        super.willMove(toSuperview: newSuperview)
         if (self.superview != nil){
             self.superview!.removeObserver(self, forKeyPath: refreshContentSize as String,context:nil)
         }
         if (newSuperview != nil)  {
             // 监听contentsize
-            newSuperview.addObserver(self, forKeyPath: refreshContentSize, options: NSKeyValueObservingOptions.New, context: nil)
+            newSuperview.addObserver(self, forKeyPath: refreshContentSize, options: NSKeyValueObservingOptions.new, context: nil)
             // 重新调整frame
             resetFrameWithContentSize()
         }
@@ -336,12 +336,12 @@ class EYEPullToRefreshFooterView: EYEPullToRefreshView {
             let tableView:UITableView = self.scrollView as! UITableView
             
             for i in 0..<tableView.numberOfSections {
-                totalCount = totalCount + tableView.numberOfRowsInSection(i)
+                totalCount = totalCount + tableView.numberOfRows(inSection: i)
             }
         } else if self.scrollView is UICollectionView {
             let collectionView:UICollectionView = self.scrollView as! UICollectionView
-            for i in 0..<collectionView.numberOfSections() {
-                totalCount = totalCount + collectionView.numberOfItemsInSection(i)
+            for i in 0..<collectionView.numberOfSections {
+                totalCount = totalCount + collectionView.numberOfItems(inSection: i)
             }
         }
         return totalCount
@@ -362,7 +362,7 @@ class EYEPullToRefreshFooterView: EYEPullToRefreshView {
             // 普通状态
             case .Normal:
                 if .Refreshing == oldState {
-                    UIView.animateWithDuration(animationDuration, animations: {
+                    UIView.animate(withDuration: animationDuration, animations: {
                         self.scrollView.contentInset.bottom = self.scrollViewOriginalInset.bottom
                     })
                     
@@ -382,7 +382,7 @@ class EYEPullToRefreshFooterView: EYEPullToRefreshView {
             // 正在加载更多
             case .Refreshing:
                 self.lastRefreshCount = self.totalDataCountInScrollView();
-                UIView.animateWithDuration(animationDuration, animations: {
+                UIView.animate(withDuration: animationDuration, animations: {
                     var bottom : CGFloat = self.frame.size.height + self.scrollViewOriginalInset.bottom
                     let deltaH : CGFloat = self.heightForContentBreakView()
                     if deltaH < 0 {

@@ -84,19 +84,19 @@ class EYEDiscoverDetailTimeController: UIViewController, LoadingPresenter  {
 
  //MARK: ------------------- UICollectionViewDelegate,UICollectionViewDataSource ---------------------
 extension EYEDiscoverDetailTimeController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return modelArray.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(EYEChoiceCell.reuseIdentifier, forIndexPath: indexPath) as! EYEChoiceCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EYEChoiceCell.reuseIdentifier, for: indexPath) as! EYEChoiceCell
         cell.model = modelArray[indexPath.row]
         return cell
     }
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if self.parentViewController is EYEDiscoverDetailController {
-            (parentViewController as! EYEDiscoverDetailController).selectCell = collectionView.cellForItemAtIndexPath(indexPath) as! EYEChoiceCell
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if self.parent is EYEDiscoverDetailController {
+            (parent as! EYEDiscoverDetailController).selectCell = collectionView.cellForItem(at: indexPath as IndexPath) as! EYEChoiceCell
         }
         
         let model = modelArray[indexPath.row]

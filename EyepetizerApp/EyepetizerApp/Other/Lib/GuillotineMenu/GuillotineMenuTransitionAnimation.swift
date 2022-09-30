@@ -11,17 +11,17 @@ import UIKit
 @objc
 protocol GuillotineMenu: NSObjectProtocol {
 	
-    optional var dismissButton: UIButton! { get }
-    optional var titleLabel: UILabel! { get }
+    @objc optional var dismissButton: UIButton! { get }
+    @objc optional var titleLabel: UILabel! { get }
 }
 
 @objc
 protocol GuillotineAnimationDelegate: NSObjectProtocol {
 	
-    optional func animatorDidFinishPresentation(animator: GuillotineTransitionAnimation)
-    optional func animatorDidFinishDismissal(animator: GuillotineTransitionAnimation)
-    optional func animatorWillStartPresentation(animator: GuillotineTransitionAnimation)
-    optional func animatorWillStartDismissal(animator: GuillotineTransitionAnimation)
+    @objc optional func animatorDidFinishPresentation(animator: GuillotineTransitionAnimation)
+    @objc optional func animatorDidFinishDismissal(animator: GuillotineTransitionAnimation)
+    @objc optional func animatorWillStartPresentation(animator: GuillotineTransitionAnimation)
+    @objc optional func animatorWillStartDismissal(animator: GuillotineTransitionAnimation)
 }
 
 class GuillotineTransitionAnimation: NSObject {
@@ -75,10 +75,10 @@ class GuillotineTransitionAnimation: NSObject {
     
     //MARK: - Private methods
     private func animatePresentation(context: UIViewControllerContextTransitioning) {
-        menu = context.viewControllerForKey(UITransitionContextToViewControllerKey)!
-        context.containerView()!.addSubview(menu.view)
+        menu = context.viewController(forKey: UITransitionContextViewControllerKey.to)!
+        context.containerView.addSubview(menu.view)
         
-        if UIDevice.currentDevice().orientation == .LandscapeLeft || UIDevice.currentDevice().orientation == .LandscapeRight {
+        if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight {
             updateChromeView()
             menu.view.addSubview(chromeView!)
         }
@@ -88,93 +88,93 @@ class GuillotineTransitionAnimation: NSObject {
                 let guillotineMenu = menu as! GuillotineMenu
                 containerMenuButton = guillotineMenu.dismissButton
                 setupContainerMenuButtonFrameAndTopOffset()
-                context.containerView()!.addSubview(containerMenuButton!)
+                context.containerView.addSubview(containerMenuButton!)
             }
         }
         
-        let fromVC = context.viewControllerForKey(UITransitionContextFromViewControllerKey)
+        let fromVC = context.viewController(forKey: UITransitionContextViewControllerKey.from)
         fromVC?.beginAppearanceTransition(false, animated: true)
         
-        animationDelegate?.animatorWillStartPresentation?(self)
+        animationDelegate?.animatorWillStartPresentation?(animator: self)
         
-        animateMenu(menu.view, context: context)
+        animateMenu(view: menu.view, context: context)
     }
     
     private func animateDismissal(context: UIViewControllerContextTransitioning) {
-        menu = context.viewControllerForKey(UITransitionContextFromViewControllerKey)!
+        menu = context.viewController(forKey: UITransitionContextViewControllerKey.from)!
         if menu.navigationController != nil {
-            let toVC = context.viewControllerForKey(UITransitionContextToViewControllerKey)!
-            context.containerView()!.addSubview(toVC.view)
-            context.containerView()!.sendSubviewToBack(toVC.view)
+            let toVC = context.viewController(forKey: UITransitionContextViewControllerKey.to)!
+            context.containerView.addSubview(toVC.view)
+            context.containerView.sendSubview(toBack: toVC.view)
         }
-        if UIDevice.currentDevice().orientation == .LandscapeLeft || UIDevice.currentDevice().orientation == .LandscapeRight {
+        if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight {
             updateChromeView()
             menu.view.addSubview(chromeView!)
         }
         
-        let toVC = context.viewControllerForKey(UITransitionContextToViewControllerKey)
+        let toVC = context.viewController(forKey: UITransitionContextViewControllerKey.to)
         toVC?.beginAppearanceTransition(true, animated: true)
 
-        animationDelegate?.animatorWillStartDismissal?(self)
+        animationDelegate?.animatorWillStartDismissal?(animator: self)
         
-        animateMenu(menu.view, context: context)
+        animateMenu(view: menu.view, context: context)
     }
     
     private func animateMenu(view: UIView, context:UIViewControllerContextTransitioning) {
         animationContext = context
-        animator = UIDynamicAnimator(referenceView: context.containerView()!)
+        animator = UIDynamicAnimator(referenceView: context.containerView)
         animator.delegate = self
-        vectorDY = CGFloat(vectorDYCoefficient * Double(UIScreen.mainScreen().bounds.size.height) / duration)
+        vectorDY = CGFloat(vectorDYCoefficient * Double(UIScreen.main.bounds.size.height) / duration)
         
-        var rotationDirection = CGVectorMake(0, -vectorDY)
+        var rotationDirection = CGVector.init(dx: 0, dy: -vectorDY)
         var fromX: CGFloat
         var fromY: CGFloat
         var toX: CGFloat
         var toY: CGFloat
         if self.mode == .Presentation {
             if supportView != nil {
-                showHostTitleLabel(false, animated: true)
+                showHostTitleLabel(show: false, animated: true)
             }
-            view.transform = CGAffineTransformRotate(CGAffineTransformIdentity, degreesToRadians(initialMenuRotationAngle));
-            view.frame = CGRectMake(0, -CGRectGetHeight(view.frame)+topOffset, CGRectGetWidth(view.frame), CGRectGetHeight(view.frame))
-            rotationDirection = CGVectorMake(0, vectorDY)
+            view.transform = CGAffineTransform.init(rotationAngle: degreesToRadians(degrees: initialMenuRotationAngle))
+            view.frame = CGRect.init(x: 0, y: -view.frame.height+topOffset, width: view.frame.width, height: view.frame.height)
+            rotationDirection = CGVector.init(dx: 0, dy: vectorDY)
             
-            if UIDevice.currentDevice().orientation == .LandscapeLeft || UIDevice.currentDevice().orientation == .LandscapeRight {
+            if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight {
 
-                fromX = CGRectGetWidth(context.containerView()!.frame) - 1
-                fromY = CGRectGetHeight(context.containerView()!.frame) + fromYPresentationLandscapeAdjustment
+                fromX = context.containerView.frame.width - 1
+                fromY = context.containerView.frame.height + fromYPresentationLandscapeAdjustment
                 toX = fromX + toXPresentationLandscapeAdjustment
                 toY = fromY
             } else {
                 fromX = -1
-                fromY = CGRectGetHeight(context.containerView()!.frame) + fromYPresentationAdjustment
+                fromY = context.containerView.frame.height + fromYPresentationAdjustment
                 toX = fromX
                 toY = fromY + 1
             }
         } else {
             if supportView != nil {
-                showHostTitleLabel(true, animated: true)
+                showHostTitleLabel(show: true, animated: true)
             }
-            if UIDevice.currentDevice().orientation == .LandscapeLeft || UIDevice.currentDevice().orientation == .LandscapeRight {
+            if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight {
                 fromX = -1
-                fromY = -CGRectGetWidth(context.containerView()!.frame) + topOffset + fromYDismissalLandscapeAdjustment
+                fromY = -context.containerView.frame.width + topOffset + fromYDismissalLandscapeAdjustment
                 toX = fromX
                 toY = fromY + toYDismissalLandscapeAdjustment
             } else {
-                fromX = CGRectGetHeight(context.containerView()!.frame) - 1
-                fromY = -CGRectGetWidth(context.containerView()!.frame) + topOffset + fromYDismissalAdjustment
+                fromX = context.containerView.frame.height - 1
+                fromY = -context.containerView.frame.width + topOffset + fromYDismissalAdjustment
                 toX = fromX + 1
                 toY = fromY
             }
         }
         
-        let anchorPoint = CGPointMake(topOffset / 2, topOffset / 2)
+        let anchorPoint = CGPoint.init(x: topOffset / 2, y: topOffset / 2)
         let viewOffset = UIOffsetMake(-view.bounds.size.width / 2 + anchorPoint.x, -view.bounds.size.height / 2 + anchorPoint.y)
         let attachmentBehaviour = UIAttachmentBehavior(item: view, offsetFromCenter: viewOffset, attachedToAnchor: anchorPoint)
         animator.addBehavior(attachmentBehaviour)
 
         let collisionBehaviour = UICollisionBehavior()
-        collisionBehaviour.addBoundaryWithIdentifier("collide", fromPoint: CGPointMake(fromX, fromY), toPoint: CGPointMake(toX, toY))
+        collisionBehaviour.addBoundary(withIdentifier: "collide" as NSCopying, from: CGPoint.init(x: fromX, y:fromY), to: CGPoint.init(x: toX, y: toY))
         collisionBehaviour.addItem(view)
         animator.addBehavior(collisionBehaviour)
         
@@ -182,18 +182,18 @@ class GuillotineTransitionAnimation: NSObject {
         itemBehaviour.elasticity = menuElasticity
         animator.addBehavior(itemBehaviour)
         
-        let fallBehaviour = UIPushBehavior(items:[view], mode: .Continuous)
+        let fallBehaviour = UIPushBehavior(items:[view], mode: .continuous)
         fallBehaviour.pushDirection = rotationDirection
         animator.addBehavior(fallBehaviour)
         //Start displayLink
-        displayLink.paused = false
+        displayLink.isPaused = false
     }
     
     private func showHostTitleLabel(show: Bool, animated: Bool) {
         if let guillotineMenu = menu as? GuillotineMenu {
             guard guillotineMenu.titleLabel != nil else { return }
-            guillotineMenu.titleLabel!.center = CGPointMake(CGRectGetHeight(supportView!.frame) / 2, CGRectGetWidth(supportView!.frame) / 2)
-            guillotineMenu.titleLabel!.transform = CGAffineTransformMakeRotation(degreesToRadians(90));
+            guillotineMenu.titleLabel!.center = CGPoint.init(x: supportView!.frame.height / 2, y: supportView!.frame.width / 2)
+            guillotineMenu.titleLabel!.transform = CGAffineTransform(rotationAngle: degreesToRadians(degrees: 90));
             menu.view.addSubview(guillotineMenu.titleLabel!)
             if mode == .Presentation {
                 guillotineMenu.titleLabel!.alpha = 1;
@@ -201,29 +201,30 @@ class GuillotineTransitionAnimation: NSObject {
                 guillotineMenu.titleLabel!.alpha = 0;
             }
             
+            let alpha = show ? 1.0 : 0
             if animated {
-                UIView.animateWithDuration(duration, animations: {
-                    guillotineMenu.titleLabel!.alpha = CGFloat(show)
+                UIView.animate(withDuration: duration, animations: {
+                    guillotineMenu.titleLabel!.alpha = alpha
                     }, completion: nil)
             } else {
-                guillotineMenu.titleLabel!.alpha = CGFloat(show)
+                guillotineMenu.titleLabel!.alpha = alpha
             }
         }
     }
     
     private func updateChromeView() {
-        chromeView = UIView(frame: CGRectMake(0, CGRectGetHeight(menu.view.frame), CGRectGetWidth(menu.view.frame), CGRectGetHeight(menu.view.frame)))
+        chromeView = UIView(frame: CGRect.init(x: 0, y: menu.view.frame.height, width: menu.view.frame.width, height: menu.view.frame.height))
         chromeView!.backgroundColor = menu.view.backgroundColor
     }
     
     private func setupDisplayLink() {
         displayLink = CADisplayLink(target: self, selector: #selector(GuillotineTransitionAnimation.updateContainerMenuButton))
-        displayLink.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
-        displayLink.paused = true
+        displayLink.add(to: RunLoop.current, forMode: RunLoop.Mode.commonModes)
+        displayLink.isPaused = true
     }
     
     private func setupSystemVersionAdjustment() {
-        let device = UIDevice.currentDevice()
+        let device = UIDevice.current
         let iosVersion = Double(device.systemVersion) ?? 0
         let iOS9 = iosVersion >= 9
         
@@ -254,29 +255,29 @@ class GuillotineTransitionAnimation: NSObject {
 	
     @objc
 		private func updateContainerMenuButton() {
-        let rotationTransform: CATransform3D = menu.view.layer.presentationLayer()!.transform
+            let rotationTransform: CATransform3D = menu.view.layer.presentation()!.transform
         var angle: CGFloat = 0
         if (rotationTransform.m11 < 0.0) {
-            angle = 180.0 - radiansToDegrees(asin(rotationTransform.m12))
+            angle = 180.0 - radiansToDegrees(radians: asin(rotationTransform.m12))
         } else {
-            angle = radiansToDegrees(asin(rotationTransform.m12))
+            angle = radiansToDegrees(radians: asin(rotationTransform.m12))
         }
         let degrees: CGFloat = 90 - abs(angle)
-        containerMenuButton?.layer.transform = CATransform3DRotate(CATransform3DIdentity, degreesToRadians(degrees), 0, 0, 1)
+            containerMenuButton?.layer.transform = CATransform3DRotate(CATransform3DIdentity, degreesToRadians(degrees: degrees), 0, 0, 1)
     }
     
     func setupContainerMenuButtonFrameAndTopOffset() {
-        topOffset = supportView!.frame.origin.y + CGRectGetHeight(supportView!.bounds)
-        let senderRect = supportView!.convertRect(presentButton!.frame, toView: nil)
+        topOffset = supportView!.frame.origin.y + supportView!.bounds.height
+        let senderRect = supportView!.convert(presentButton!.frame, to: nil)
         containerMenuButton?.frame = senderRect
     }
     
     //MARK: - Observer
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if context == myContext {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if context == &myContext {
             setupContainerMenuButtonFrameAndTopOffset()
         } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 }
@@ -284,16 +285,16 @@ class GuillotineTransitionAnimation: NSObject {
 //MARK: - UIViewControllerAnimatedTransitioning protocol implementation
 extension GuillotineTransitionAnimation: UIViewControllerAnimatedTransitioning {
 	
-    func animateTransition(context: UIViewControllerContextTransitioning) {
+    func animateTransition(using context: UIViewControllerContextTransitioning) {
         switch mode {
         case .Presentation:
-            animatePresentation(context)
+            animatePresentation(context: context)
         case .Dismissal:
-            animateDismissal(context)
+            animateDismissal(context: context)
         }
     }
     
-    func transitionDuration(context: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using context: UIViewControllerContextTransitioning?) -> TimeInterval {
         return duration
     }
 }
@@ -304,24 +305,24 @@ extension GuillotineTransitionAnimation: UIDynamicAnimatorDelegate {
     func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
         if self.mode == .Presentation {
             self.animator.removeAllBehaviors()
-            menu.view.transform = CGAffineTransformIdentity
-            menu.view.frame = animationContext.containerView()!.bounds
-            anchorPoint = CGPointZero
+            menu.view.transform = CGAffineTransform.identity
+            menu.view.frame = animationContext.containerView.bounds
+            anchorPoint = CGPoint.zero
         }
 
         chromeView?.removeFromSuperview()
         animationContext.completeTransition(true)
         
         if self.mode == .Presentation {
-            let fromVC = animationContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
+            let fromVC = animationContext.viewController(forKey: UITransitionContextViewControllerKey.from)
             fromVC?.endAppearanceTransition()
-            animationDelegate?.animatorDidFinishPresentation?(self)
+            animationDelegate?.animatorDidFinishPresentation?(animator: self)
         } else {
-            let toVC = animationContext.viewControllerForKey(UITransitionContextToViewControllerKey)
+            let toVC = animationContext.viewController(forKey: UITransitionContextViewControllerKey.to)
             toVC?.endAppearanceTransition()
-            animationDelegate?.animatorDidFinishDismissal?(self)
+            animationDelegate?.animatorDidFinishDismissal?(animator: self)
         }
         //Stop displayLink
-        displayLink.paused = true
+        displayLink.isPaused = true
     }
 }

@@ -10,22 +10,22 @@ import UIKit
 
 /// tabbar切换动画
 class EYETabbarTransition: NSObject, UIViewControllerAnimatedTransitioning {
-    let duration : NSTimeInterval = 0.4
+    let duration : TimeInterval = 0.4
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return duration
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let containerView : UIView = transitionContext.containerView()!
-        let fromView = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)?.view
-        let toView = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)?.view
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let containerView : UIView = transitionContext.containerView
+        let fromView = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)?.view
+        let toView = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)?.view
         
         containerView.addSubview(toView!)
         toView?.alpha = 0
         fromView?.alpha = 1
         
-        UIView.animateWithDuration(transitionDuration(transitionContext), animations: { () -> Void in
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: { () -> Void in
             toView?.alpha = 1
             fromView?.alpha = 0
             

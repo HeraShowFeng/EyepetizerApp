@@ -50,16 +50,16 @@ class EYEDiscoverCell : UICollectionViewCell, Reusable {
     /// 黑色图层
     private lazy var coverButton : UIButton = {
         var coverButton : UIButton = UIButton()
-        coverButton.userInteractionEnabled = false
-        coverButton.backgroundColor = UIColor.blackColor()
+        coverButton.isUserInteractionEnabled = false
+        coverButton.backgroundColor = UIColor.black
         coverButton.alpha = 0.3
         return coverButton
     }()
     /// 标题
     private var titleLabel : UILabel = {
         var titleLabel : UILabel = UILabel()
-        titleLabel.textColor = UIColor.whiteColor()
-        titleLabel.textAlignment = .Center
+        titleLabel.textColor = UIColor.white
+        titleLabel.textAlignment = .center
         titleLabel.font = UIFont.customFont_FZLTZCHJW(fontSize: UIConstant.UI_FONT_16)
         return titleLabel
     }()

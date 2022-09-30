@@ -76,12 +76,12 @@ class EYEChoiceCell: UICollectionViewCell, Reusable {
             if let feed = model.feed {
 //                self.backgroundImageView.kf_setImageWithURL(NSURL(string: feed)!)
 //                self.backgroundImageView.yy_setImageWithURL(NSURL(string: feed)!, placeholder: UIImage.colorImage(UIColor.lightGrayColor(), size: backgroundImageView.size))
-                self.backgroundImageView.yy_setImageWithURL(NSURL(string: feed)!, options: .ProgressiveBlur)
+                self.backgroundImageView.yy_setImage(with: NSURL(string: feed)! as URL, options: .progressiveBlur)
             } else {
                 if let image = model.image {
 //                    self.backgroundImageView.yy_setImageWithURL(NSURL(string: image)!, placeholder: UIImage.colorImage(UIColor.lightGrayColor(), size: backgroundImageView.size))
-                    self.backgroundImageView.yy_setImageWithURL(NSURL(string: image)!, options: .ProgressiveBlur)
-                    self.subTitleLabel.hidden = true
+                    self.backgroundImageView.yy_setImage(with: NSURL(string: image)! as URL, options: .progressiveBlur)
+                    self.subTitleLabel.isHidden = true
                 }
             }
             // 设置标题
@@ -94,7 +94,7 @@ class EYEChoiceCell: UICollectionViewCell, Reusable {
     // 传入index
     var index : String! {
         didSet {
-            self.indexView.hidden = false
+            self.indexView.isHidden = false
             self.indexLabel.text = index
         }
     }
@@ -109,8 +109,8 @@ class EYEChoiceCell: UICollectionViewCell, Reusable {
     /// 黑色图层
     lazy var coverButton : UIButton = {
         var coverButton : UIButton = UIButton()
-        coverButton.userInteractionEnabled = false
-        coverButton.backgroundColor = UIColor.blackColor()
+        coverButton.isUserInteractionEnabled = false
+        coverButton.backgroundColor = UIColor.black
         coverButton.alpha = 0.3
         return coverButton
     }()
@@ -118,9 +118,9 @@ class EYEChoiceCell: UICollectionViewCell, Reusable {
     /// 标题
     lazy var titleLabel : UILabel = {
         var titleLabel : UILabel = UILabel()
-        titleLabel.textAlignment = .Center
+        titleLabel.textAlignment = .center
         titleLabel.text = "标题"
-        titleLabel.textColor = UIColor.whiteColor()
+        titleLabel.textColor = UIColor.white
         titleLabel.font = UIFont.customFont_FZLTZCHJW(fontSize: UIConstant.UI_FONT_14)
         return titleLabel
     }()
@@ -128,9 +128,9 @@ class EYEChoiceCell: UICollectionViewCell, Reusable {
     /// 副标题
     lazy var subTitleLabel : UILabel = {
         var subTitleLabel : UILabel = UILabel()
-        subTitleLabel.textAlignment = .Center
+        subTitleLabel.textAlignment = .center
         subTitleLabel.text = "副标题"
-        subTitleLabel.textColor = UIColor.whiteColor()
+        subTitleLabel.textColor = UIColor.white
         subTitleLabel.font = UIFont.customFont_FZLTXIHJW()
         return subTitleLabel
     }()
@@ -138,22 +138,22 @@ class EYEChoiceCell: UICollectionViewCell, Reusable {
     /// 上面横线
     private lazy var topLine: UIView = {
         var topLine = UIView()
-        topLine.backgroundColor = UIColor.whiteColor()
+        topLine.backgroundColor = UIColor.white
         return topLine
     }()
     
     /// 下面横线
     private lazy var bottomLine: UIView = {
         var bottomLine = UIView()
-        bottomLine.backgroundColor = UIColor.whiteColor()
+        bottomLine.backgroundColor = UIColor.white
         return bottomLine
     }()
     
     /// 行数
     private lazy var indexLabel: UILabel = {
         var indexLabel = UILabel()
-        indexLabel.textColor = UIColor.whiteColor()
-        indexLabel.textAlignment = .Center
+        indexLabel.textColor = UIColor.white
+        indexLabel.textAlignment = .center
         indexLabel.font = UIFont.customFont_Lobster(fontSize: UIConstant.UI_FONT_14)
         return indexLabel
     }()
@@ -161,8 +161,8 @@ class EYEChoiceCell: UICollectionViewCell, Reusable {
     /// 行数
     private lazy var indexView : UIView = {
         var indexView : UIView = UIView()
-        indexView.hidden = true
-        indexView.backgroundColor = UIColor.clearColor()
+        indexView.isHidden = true
+        indexView.backgroundColor = UIColor.clear
         indexView.addSubview(self.indexLabel)
         indexView.addSubview(self.topLine)
         indexView.addSubview(self.bottomLine)

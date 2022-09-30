@@ -20,10 +20,10 @@ class EYEPlayerController: UIViewController {
         self.view.addSubview(playView)
         
         //旋转屏幕，但是只旋转当前的View
-        UIApplication.sharedApplication().setStatusBarOrientation(
-            .LandscapeRight, animated: false)
-        self.view.transform = CGAffineTransformMakeRotation(CGFloat(M_PI/2))
-        let frame = UIScreen.mainScreen().bounds
+        UIApplication.shared.setStatusBarOrientation(
+            .landscapeRight, animated: false)
+        self.view.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI/2))
+        let frame = UIScreen.main.bounds
         self.view.bounds = CGRect(x: 0, y: 0, width: frame.size.height, height: frame.size.width)
         
         // 初始化playerLayer
@@ -34,18 +34,18 @@ class EYEPlayerController: UIViewController {
         // AVLayerVideoGravityResizeAspect,  // 等比例填充，直到一个维度到达区域边界
         // AVLayerVideoGravityResizeAspectFill, // 等比例填充，直到填充满整个视图区域，其中一个维度的部分区域会被裁剪
         // 此处根据视频填充模式设置
-        self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
+        self.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
         // 添加playerLayer到self.layer
-        self.playView.layer.insertSublayer(self.playerLayer, atIndex: 0)
+        self.playView.layer.insertSublayer(self.playerLayer, at: 0)
         // 添加观察者。通知
         addObserverAndNotifacation()
         // 计时器
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(EYEPlayerController.playerTimerAction), userInfo: nil, repeats: true)
-        NSRunLoop.currentRunLoop().addTimer(self.timer, forMode: NSRunLoopCommonModes)
+        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(EYEPlayerController.playerTimerAction), userInfo: nil, repeats: true)
+        RunLoop.current.add(self.timer, forMode: .commonModes)
         
         // 开始播放
         self.player.play()
-        self.playView.startButton.selected = true
+        self.playView.startButton.isSelected = true
         
         self.playView.indicatorView.startAnimating()
     }
@@ -58,17 +58,17 @@ class EYEPlayerController: UIViewController {
         self.state = .PlayerStateStopped
         
         // 初始化playerItem
-        self.playerItem  = AVPlayerItem(URL: NSURL(string: url)!)
-        self.player.replaceCurrentItemWithPlayerItem(self.playerItem)
+        self.playerItem  = AVPlayerItem(url: NSURL(string: url)! as URL)
+        self.player.replaceCurrentItem(with: self.playerItem)
     }
     
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBarHidden = true
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     override func shouldAutorotate() -> Bool {
@@ -82,30 +82,30 @@ class EYEPlayerController: UIViewController {
     //MARK: --------------------------- Event or Action --------------------------
     private func addObserverAndNotifacation() {
         // AVPlayer播放完成通知
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EYEPlayerController.moviePlayDidEnd(_:)), name: AVPlayerItemDidPlayToEndTimeNotification, object: self.player.currentItem)
+        NotificationCenter.default.addObserver(self, selector: #selector(EYEPlayerController.moviePlayDidEnd(notification:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player.currentItem)
         // app退到后台
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EYEPlayerController.appDidEnterBackground), name: UIApplicationWillResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(EYEPlayerController.appDidEnterBackground), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         // app进入前台
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EYEPlayerController.appDidEnterPlayGround), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(EYEPlayerController.appDidEnterPlayGround), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         // slider开始滑动事件
-        self.playView.sliderView.addTarget(self, action: #selector(EYEPlayerController.progressSliderTouchBegan(_:)), forControlEvents: .TouchDown)
+        self.playView.sliderView.addTarget(self, action: #selector(EYEPlayerController.progressSliderTouchBegan(slide:)), for: .touchDown)
         // slider滑动中事件
-        self.playView.sliderView.addTarget(self, action: #selector(EYEPlayerController.progressSliderValueChanged(_:)), forControlEvents: .ValueChanged)
+        self.playView.sliderView.addTarget(self, action: #selector(EYEPlayerController.progressSliderValueChanged(slider:)), for: .valueChanged)
         // slider结束滑动事件
-        self.playView.sliderView.addTarget(self, action: #selector(EYEPlayerController.progressSliderTouchEnded(_:)), forControlEvents: [.TouchUpInside, .TouchCancel, .TouchUpOutside])
+        self.playView.sliderView.addTarget(self, action: #selector(EYEPlayerController.progressSliderTouchEnded(slider:)), for: [.touchUpInside, .touchCancel, .touchUpOutside])
         // 播放按钮点击事件
-        self.playView.startButton.addTarget(self, action: #selector(EYEPlayerController.startAction(_:)), forControlEvents: .TouchUpInside)
+        self.playView.startButton.addTarget(self, action: #selector(EYEPlayerController.startAction(button:)), for: .touchUpInside)
         // 返回按钮点击事件
-        self.playView.backBtn.addTarget(self, action: #selector(EYEPlayerController.backButtonAction), forControlEvents: .TouchUpInside)
+        self.playView.backBtn.addTarget(self, action: #selector(EYEPlayerController.backButtonAction), for: .touchUpInside)
         
         // 监听播放状态
-        self.player.currentItem?.addObserver(self, forKeyPath: "status", options: .New, context: nil)
+        self.player.currentItem?.addObserver(self, forKeyPath: "status", options: .new, context: nil)
         // 监听loadedTimeRanges属性
-        self.player.currentItem?.addObserver(self, forKeyPath: "loadedTimeRanges", options: .New, context: nil)
+        self.player.currentItem?.addObserver(self, forKeyPath: "loadedTimeRanges", options: .new, context: nil)
         // Will warn you when your buffer is empty
-        self.player.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .New, context: nil)
+        self.player.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
         // Will warn you when your buffer is good to go again.
-        self.player.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .New, context: nil)
+        self.player.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
         
     }
     
@@ -113,7 +113,7 @@ class EYEPlayerController: UIViewController {
      取消注册通知和观察者
      */
     private func unregisterNotifacation() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         
         // 移除观察者
         self.player.currentItem?.removeObserver(self, forKeyPath: "status")
@@ -128,9 +128,9 @@ class EYEPlayerController: UIViewController {
      *  @param button UIButton
      */
     @objc private func startAction(button : UIButton) {
-        button.selected = !button.selected
-        self.isPauseByUser = !button.selected
-        if button.selected {
+        button.isSelected = !button.isSelected
+        self.isPauseByUser = !button.isSelected
+        if button.isSelected {
             self.player.play()
             self.state = .PlayerStatePlaying
         } else {
@@ -144,7 +144,7 @@ class EYEPlayerController: UIViewController {
      */
     @objc private func moviePlayDidEnd(notification: NSNotification) {
         self.state = .PlayerStateStopped
-        self.playView.startButton.selected = false
+        self.playView.startButton.isSelected = false
     }
     
     /**
@@ -152,9 +152,9 @@ class EYEPlayerController: UIViewController {
      */
     
     @objc private func progressSliderTouchBegan(slide : UISlider) {
-        if self.player.status == .ReadyToPlay {
+        if self.player.status == .readyToPlay {
             // 暂停timer
-            self.timer.fireDate = NSDate.distantFuture()
+            self.timer.fireDate = NSDate.distantFuture
         }
     }
     /**
@@ -162,7 +162,7 @@ class EYEPlayerController: UIViewController {
      */
     @objc private func progressSliderValueChanged(slider : UISlider) {
         //拖动改变视频播放进度
-        if self.player.status == .ReadyToPlay {
+        if self.player.status == .readyToPlay {
             var style = ""
             let value = slider.value - sliderLastValue
             if value > 0 {
@@ -191,7 +191,7 @@ class EYEPlayerController: UIViewController {
             if durSec > 0 {
                 // 当总时长>0时候才能拖动slider
                 self.playView.startLabel.text = currentTime
-                self.playView.horizontalLabel.hidden = false
+                self.playView.horizontalLabel.isHidden = false
                 self.playView.horizontalLabel.text = String(format:"%@ %@ / %@", style, currentTime, totalTime)
             } else {
                 // 此时设置slider值为0
@@ -226,7 +226,7 @@ class EYEPlayerController: UIViewController {
             let dragedCMTime = CMTimeMake(dragedSeconds, 1)
             
             // 滑动结束视频跳转
-            self.player.seekToTime(dragedCMTime, completionHandler: { (finish) in
+            self.player.seek(to: dragedCMTime, completionHandler: { (finish) in
                 // 如果点击了暂停按钮
                 if self.isPauseByUser == true {
                     return
@@ -234,7 +234,7 @@ class EYEPlayerController: UIViewController {
                 
                 self.player.play()
                 
-                if !self.playerItem.playbackLikelyToKeepUp && !self.isLocalVideo {
+                if !self.playerItem.isPlaybackLikelyToKeepUp && !self.isLocalVideo {
                     self.state = .PlayerStateBuffering
                     self.playView.indicatorView.startAnimating()
                 }
@@ -250,7 +250,7 @@ class EYEPlayerController: UIViewController {
         self.player.pause()
         
         self.state = .PlayerStateStopped
-        self.navigationController?.popViewControllerAnimated(false)
+        self.navigationController?.popViewController(animated: false)
     }
     
     /**
@@ -272,13 +272,13 @@ class EYEPlayerController: UIViewController {
     }
     
     // KVO监听属性
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         if keyPath == "status" {
-            if self.player.status == .ReadyToPlay {
+            if self.player.status == .readyToPlay {
                 self.playView.indicatorView.stopAnimating()
                 self.state = .PlayerStatePlaying
-            } else if self.player.status == .Failed {
+            } else if self.player.status == .failed {
                 self.playView.indicatorView.startAnimating()
             }
         } else if keyPath == "loadedTimeRanges" {
@@ -288,14 +288,14 @@ class EYEPlayerController: UIViewController {
             self.playView.progressView.setProgress(Float(timeInterval) / Float(totalDuration), animated: false)
         } else if keyPath == "playbackBufferEmpty" {
             // 当缓冲是空的时候
-            if self.playerItem.playbackBufferEmpty {
+            if self.playerItem.isPlaybackBufferEmpty {
                 self.state = .PlayerStateBuffering
                 self.bufferingSomeSecond()
             }
         } else if keyPath == "playbackLikelyToKeepUp" {
             // 当缓冲好的时候
             
-            if self.playerItem.playbackLikelyToKeepUp {
+            if self.playerItem.isPlaybackLikelyToKeepUp {
                 self.state = .PlayerStatePlaying
             }
         }
@@ -330,10 +330,10 @@ class EYEPlayerController: UIViewController {
     /**
      计算缓冲进度
      */
-    private func availableDuration() -> NSTimeInterval {
+    private func availableDuration() -> TimeInterval {
         let loadedTimeRanges = self.player.currentItem?.loadedTimeRanges
         // 获取缓冲区域
-        let timeRange = loadedTimeRanges?.first?.CMTimeRangeValue
+        let timeRange = loadedTimeRanges?.first?.timeRangeValue
         let startSeconds = CMTimeGetSeconds(timeRange!.start)
         let durationSeconds = CMTimeGetSeconds(timeRange!.duration)
         // 计算缓冲总进度
@@ -411,7 +411,7 @@ class EYEPlayerController: UIViewController {
     // 播放属性
     private var playerItem : AVPlayerItem!
     // 定时器
-    private var timer: NSTimer!
+    private var timer: Timer!
     // 是否被用户暂停
     private var isPauseByUser : Bool! = false
     // slider上次的值

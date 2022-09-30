@@ -21,7 +21,7 @@ class EYELoaderView: UIView {
     }
     
     func startLoadingAnimation() {
-        self.hidden = false
+        self.isHidden = false
         let animation : CABasicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
         animation.fromValue = 0
         animation.toValue = M_PI * 2
@@ -29,8 +29,8 @@ class EYELoaderView: UIView {
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         animation.repeatCount = HUGE
         animation.fillMode = kCAFillModeForwards
-        animation.removedOnCompletion = false
-        self.eyeCenterLoaderView.layer.addAnimation(animation, forKey: animation.keyPath)
+        animation.isRemovedOnCompletion = false
+        self.eyeCenterLoaderView.layer.add(animation, forKey: animation.keyPath)
     }
     
     func stopLoadingAnimation() {
@@ -43,7 +43,7 @@ class EYELoaderView: UIView {
         let eyeBackgroundLoaderView = UIImageView(image: UIImage(named: "ic_eye_black_outer"))
         eyeBackgroundLoaderView.frame = CGRect(x: 0, y: 0, width: self.height,height: self.height)
         eyeBackgroundLoaderView.center = self.center
-        eyeBackgroundLoaderView.contentMode = .ScaleAspectFit
+        eyeBackgroundLoaderView.contentMode = .scaleAspectFit
         eyeBackgroundLoaderView.layer.allowsEdgeAntialiasing = true
         return eyeBackgroundLoaderView;
     }()
@@ -53,7 +53,7 @@ class EYELoaderView: UIView {
         let eyeCenterLoaderView = UIImageView(image: UIImage(named: "ic_eye_black_inner"))
         eyeCenterLoaderView.frame = CGRect(x: 0, y: 0, width: self.height - UIConstant.UI_MARGIN_5, height: self.height - UIConstant.UI_MARGIN_5)
         eyeCenterLoaderView.center = self.center
-        eyeCenterLoaderView.contentMode = .ScaleAspectFit
+        eyeCenterLoaderView.contentMode = .scaleAspectFit
         eyeCenterLoaderView.layer.allowsEdgeAntialiasing = true
         return eyeCenterLoaderView;
     }()

@@ -14,11 +14,11 @@ class EYELaunchView: UIView {
     // 黑色背景
     @IBOutlet weak var blackBgView: UIView!
     // 动画完成回调
-    typealias AnimationDidStopCallBack = (launchView : EYELaunchView) -> Void
+    typealias AnimationDidStopCallBack = (_ launchView : EYELaunchView) -> Void
     var callBack : AnimationDidStopCallBack?
     
     class func launchView() -> EYELaunchView {
-        return NSBundle.mainBundle().loadNibNamed("EYELaunchView", owner: nil, options: nil).first as! EYELaunchView
+        return Bundle.main.loadNibNamed("EYELaunchView", owner: nil, options: nil)?.first as! EYELaunchView
     }
 
     override func awakeFromNib() {
@@ -29,15 +29,15 @@ class EYELaunchView: UIView {
     
     // 黑色背景渐变动画和图片放大动画
     private func startAnimation() {
-        UIView.animateWithDuration(5, delay: 1, options: .CurveEaseInOut, animations: { 
+        UIView.animate(withDuration: 5, delay: 1, options: .curveEaseInOut, animations: {
     
-            self.imageView.transform = CGAffineTransformMakeScale(1.5, 1.5)
+            self.imageView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             self.blackBgView.alpha = 0
             }) { [unowned self](_) in
                 
                 self.blackBgView.removeFromSuperview()
                 if let cb = self.callBack {
-                    cb(launchView: self)
+                    cb(self)
                 }
         }
     }

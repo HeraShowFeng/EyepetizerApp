@@ -33,7 +33,7 @@ class EYEChoiceController: EYEBaseViewController, LoadingPresenter, MenuPresente
             }
         }
     }
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
     }
@@ -75,7 +75,7 @@ class EYEChoiceController: EYEBaseViewController, LoadingPresenter, MenuPresente
     //MARK: --------------------------- Event or Action --------------------------
     func menuBtnDidClick() {
         let menuController = EYEMenuViewController()
-        menuController.modalPresentationStyle = .Custom
+        menuController.modalPresentationStyle = .custom
         menuController.transitioningDelegate = self
         // 设置刀砍式动画属性
         if menuController is GuillotineAnimationDelegate {
@@ -85,7 +85,7 @@ class EYEChoiceController: EYEBaseViewController, LoadingPresenter, MenuPresente
         presentationAnimator.supportView = self.navigationController?.navigationBar
         presentationAnimator.presentButton = menuBtn
         presentationAnimator.duration = 0.15
-        self.presentViewController(menuController, animated: true, completion: nil)
+        self.present(menuController, animated: true, completion: nil)
     }
     
     //MARK: --------------------------- Getter or Setter -------------------------
@@ -101,7 +101,7 @@ class EYEChoiceController: EYEBaseViewController, LoadingPresenter, MenuPresente
     private lazy var collectionView : EYECollectionView = {
         var collectionView : EYECollectionView = EYECollectionView(frame: self.view.bounds, collectionViewLayout:EYECollectionLayout())
             // 注册header
-        collectionView.registerClass(EYEChoiceHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: EYEChoiceHeaderView.reuseIdentifier)
+        collectionView.register(EYEChoiceHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: EYEChoiceHeaderView.reuseIdentifier)
         collectionView.delegate = self
         collectionView.dataSource = self
         return collectionView
@@ -120,7 +120,7 @@ extension EYEChoiceController : UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     // return section row count
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let issueModel : IssueModel = issueList[section]
         let itemList = issueModel.itemList
         return itemList.count
@@ -135,20 +135,19 @@ extension EYEChoiceController : UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     // 显示view
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell : EYEChoiceCell = collectionView.dequeueReusableCellWithReuseIdentifier(EYEChoiceCell.reuseIdentifier, forIndexPath: indexPath) as! EYEChoiceCell
-        
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell : EYEChoiceCell = collectionView.dequeueReusableCell(withReuseIdentifier: EYEChoiceCell.reuseIdentifier, for: indexPath) as! EYEChoiceCell
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        self.selectCell = collectionView.cellForItemAtIndexPath(indexPath) as! EYEChoiceCell
+        self.selectCell = collectionView.cellForItem(at: indexPath as IndexPath) as! EYEChoiceCell
 
         let issueModel = issueList[indexPath.section]
         let model: ItemModel = issueModel.itemList[indexPath.row]
         // 如果播放地址为空就返回
         if model.playUrl.isEmpty {
-            APESuperHUD.showOrUpdateHUD(.SadFace, message: "没有播放地址", duration: 0.3, presentingView: self.view, completion: nil)
+//            APESuperHUD.showOrUpdateHUD(.sadFace, message: "没有播放地址", duration: 0.3, presentingView: self.view, completion: nil)
             return
         }
         self.navigationController?.pushViewController(EYEVideoDetailController(model: model), animated: true)
@@ -160,7 +159,7 @@ extension EYEChoiceController : UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
         
 //        if kind == UICollectionElementKindSectionHeader {
-            let headerView : EYEChoiceHeaderView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: EYEChoiceHeaderView.reuseIdentifier, forIndexPath: indexPath) as! EYEChoiceHeaderView
+        let headerView : EYEChoiceHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: EYEChoiceHeaderView.reuseIdentifier, for: indexPath as IndexPath) as! EYEChoiceHeaderView
             let issueModel = issueList[indexPath.section]
             if let image = issueModel.headerImage {
                 headerView.image = image
@@ -179,7 +178,7 @@ extension EYEChoiceController : UICollectionViewDelegate, UICollectionViewDataSo
         if issueModel.isHaveSectionView {
             return CGSize(width: UIConstant.SCREEN_WIDTH, height: 50)
         } else {
-            return CGSizeZero
+            return CGSize.zero
         }
 
     }

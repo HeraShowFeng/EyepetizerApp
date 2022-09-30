@@ -10,9 +10,9 @@ import Foundation
 
 extension UILabel {
     func boundingRectWithSize(size : CGSize) -> CGSize {
-        let attribute = [NSFontAttributeName: self.font]
+        let attribute = [NSAttributedStringKey.font: self.font]
         
-        let retSize = (self.text! as NSString).boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], attributes: attribute, context: nil).size
+        let retSize = (self.text! as NSString).boundingRect(with: size, options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attribute, context: nil).size
         return retSize
     }
 }

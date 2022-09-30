@@ -24,9 +24,9 @@ class EYEMainTabView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        self.bringSubviewToFront(choiceBtn)
-        self.bringSubviewToFront(discoverBtn)
-        self.bringSubviewToFront(popularBtn)
+        self.bringSubview(toFront: choiceBtn)
+        self.bringSubview(toFront: discoverBtn)
+        self.bringSubview(toFront: popularBtn)
         
         setupBtnFont(tabBtn: choiceBtn)
         setupBtnFont(tabBtn: discoverBtn)
@@ -36,17 +36,17 @@ class EYEMainTabView: UIView {
     }
     
     class func tabView() -> EYEMainTabView {
-        return NSBundle.mainBundle().loadNibNamed("EYEMainTabView", owner: nil, options: nil).first as! EYEMainTabView
+        return Bundle.main.loadNibNamed("EYEMainTabView", owner: nil, options: nil)?.first as! EYEMainTabView
     }
     @IBAction func choiceBtnClick(sender: UIButton) {
-        setupSelectBtn(sender)
+        setupSelectBtn(selectBtn: sender)
     }
     
     @IBAction func discoverBtnClick(sender: UIButton) {
-        setupSelectBtn(sender)
+        setupSelectBtn(selectBtn: sender)
     }
     @IBAction func pupularBtnClick(sender: UIButton) {
-        setupSelectBtn(sender)
+        setupSelectBtn(selectBtn: sender)
     }
     
     /**
@@ -55,10 +55,9 @@ class EYEMainTabView: UIView {
     private func setupBtnFont(tabBtn btn : UIButton) {
         btn.titleLabel?.font = UIFont.customFont_FZLTXIHJW()
         //设置字体默认颜色
-        btn.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Normal)
+        btn.setTitleColor(UIColor.lightGray, for: .normal)
         //设置字体选中颜色
-        btn.setTitleColor(UIColor.blackColor(), forState: [.Highlighted, .Selected])
-        btn.setTitleColor(UIColor.blackColor(), forState: UIControlState.Selected)
+        btn.setTitleColor(UIColor.black, for: .selected)
     }
     
     /**
@@ -68,8 +67,8 @@ class EYEMainTabView: UIView {
         guard selectorBtn != selectBtn else {
             return
         }
-        selectorBtn.selected = false
-        selectBtn.selected = true
+        selectorBtn.isSelected = false
+        selectBtn.isSelected = true
         delegate?.tabBarDidSelector(fromSelectorButton: selectorBtn.tag, toSelectorButton:selectBtn.tag, title : (selectBtn.titleLabel?.text)!)
         selectorBtn = selectBtn
     }

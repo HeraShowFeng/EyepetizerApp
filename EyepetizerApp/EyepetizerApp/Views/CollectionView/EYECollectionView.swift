@@ -13,7 +13,7 @@ class EYECollectionLayout: UICollectionViewFlowLayout {
         super.init()
         let itemHeight = 200*UIConstant.SCREEN_WIDTH/UIConstant.IPHONE5_WIDTH
         itemSize = CGSize(width: UIConstant.SCREEN_WIDTH, height: itemHeight)
-        sectionInset = UIEdgeInsetsZero
+        sectionInset = UIEdgeInsets.zero
         minimumInteritemSpacing = 0
         minimumLineSpacing = 0
     }
@@ -28,9 +28,9 @@ class EYECollectionView: UICollectionView {
 
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
-        backgroundColor = UIColor.whiteColor()
+        backgroundColor = UIColor.white
         // 注册cell
-        registerClass(EYEChoiceCell.self, forCellWithReuseIdentifier: EYEChoiceCell.reuseIdentifier)
+        register(EYEChoiceCell.self, forCellWithReuseIdentifier: EYEChoiceCell.reuseIdentifier)
     }
 
     required init?(coder aDecoder: NSCoder) {

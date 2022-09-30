@@ -13,7 +13,7 @@ class EYEPopularHeaderView: UIView {
     //MARK: --------------------------- Life Cycle --------------------------
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
     }
     
     convenience init(frame: CGRect, titleArray: [String]) {
@@ -24,12 +24,12 @@ class EYEPopularHeaderView: UIView {
         for i in 0..<titleArray.count {
             let title = titleArray[i]
             let titleButton = UIButton(frame: CGRect(x: UIConstant.UI_MARGIN_20 + CGFloat(i)*itemWidth, y: 0, width: itemWidth, height: self.height))
-            titleButton.backgroundColor = UIColor.clearColor()
-            titleButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            titleButton.backgroundColor = UIColor.clear
+            titleButton.setTitleColor(UIColor.black, for: .normal)
             titleButton.tag = i
-            titleButton.setTitle(title, forState: .Normal)
+            titleButton.setTitle(title, for: .normal)
             titleButton.titleLabel?.font = UIFont.customFont_FZLTXIHJW()
-            titleButton.addTarget(self, action: #selector(EYEPopularHeaderView.titleBtnDidClick(_:)), forControlEvents: .TouchUpInside)
+            titleButton.addTarget(self, action: #selector(EYEPopularHeaderView.titleBtnDidClick(button:)), for: .touchUpInside)
             self.addSubview(titleButton)
             self.titleLabelArray.append(titleButton)
         }
@@ -52,10 +52,10 @@ class EYEPopularHeaderView: UIView {
             return
         }
         
-        self.startAnimation(button.tag)
+        self.startAnimation(index: button.tag)
         
         if let _ = block {
-            self.block!(targetBtn: button, index: button.tag)
+            self.block!(button, button.tag)
         }
         
         self.currentBtn = button
@@ -69,7 +69,7 @@ class EYEPopularHeaderView: UIView {
     private func startAnimation (index : Int) {
         self.isAnimation = true
         let button = self.titleLabelArray[index]
-        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseIn, animations: {
+        UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseIn, animations: {
             self.topLineView.center.x = button.center.x
             self.bottomLineView.center.x = button.center.x
             }) { (_) in
@@ -86,7 +86,7 @@ class EYEPopularHeaderView: UIView {
     }
    
     //MARK: --------------------------- Getter or Setter --------------------------
-    typealias HeaderViewBtnClickBlock = (targetBtn : UIButton, index : Int) -> Void
+    typealias HeaderViewBtnClickBlock = (_ targetBtn : UIButton, _ index : Int) -> Void
     // 标题
     private var titleArray: [String] = [String]()
     // 按钮
@@ -100,7 +100,7 @@ class EYEPopularHeaderView: UIView {
     // 顶部横线
     private lazy var topLineView : UIView = {
         let topLineView: UIView = UIView()
-        topLineView.backgroundColor = UIColor.blackColor()
+        topLineView.backgroundColor = UIColor.black
         topLineView.frame = CGRect(x: 0, y: 0, width: 35, height: 0.5)
         topLineView.center = CGPoint(x: self.titleLabelArray.first!.center.x, y: 12)
         return topLineView
@@ -108,7 +108,7 @@ class EYEPopularHeaderView: UIView {
     // 底部横线
     private lazy var bottomLineView : UIView = {
         let bottomLineView: UIView = UIView()
-        bottomLineView.backgroundColor = UIColor.blackColor()
+        bottomLineView.backgroundColor = UIColor.black
         bottomLineView.frame = CGRect(x: 0, y: 0, width: 35, height: 0.5)
         bottomLineView.center = CGPoint(x: self.titleLabelArray.first!.center.x, y: self.height-12)
         return bottomLineView

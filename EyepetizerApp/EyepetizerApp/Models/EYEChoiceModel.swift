@@ -36,7 +36,7 @@ struct ItemModel {
     var subTitle : String! {
         get {
             if let _ = category,let _ = duration {
-                return "#\(category!)  /  \(Int.durationToTimer(duration!))"
+                return "#\(category!)  /  \(Int.durationToTimer(duration: duration!))"
             } else {
                 return ""
             }

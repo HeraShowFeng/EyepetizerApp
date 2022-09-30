@@ -19,7 +19,7 @@ class EYEDiscoverController: UIViewController, LoadingPresenter {
         setupLoaderView()
         getData()
     }
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
     
@@ -50,13 +50,13 @@ class EYEDiscoverController: UIViewController, LoadingPresenter {
         let layout = UICollectionViewFlowLayout()
         let itemSize = UIConstant.SCREEN_WIDTH/2-0.5
         layout.itemSize = CGSize(width: itemSize, height: itemSize)
-        layout.sectionInset = UIEdgeInsetsZero
+        layout.sectionInset = UIEdgeInsets.zero
         layout.minimumInteritemSpacing = 1
         layout.minimumLineSpacing = 1
         
         var collectionView : UICollectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
-        collectionView.registerClass(EYEDiscoverCell.self, forCellWithReuseIdentifier: EYEDiscoverCell.reuseIdentifier)
-        collectionView.backgroundColor = UIColor.whiteColor()
+        collectionView.register(EYEDiscoverCell.self, forCellWithReuseIdentifier: EYEDiscoverCell.reuseIdentifier)
+        collectionView.backgroundColor = UIColor.white
         collectionView.delegate = self
         collectionView.dataSource = self
         return collectionView
@@ -65,7 +65,7 @@ class EYEDiscoverController: UIViewController, LoadingPresenter {
 
 // MARK: --------------------- UICollectionViewDelegate,UICollectionViewDataSource ---------------------
 extension EYEDiscoverController : UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.modelArray.count
     }
     
@@ -76,8 +76,8 @@ extension EYEDiscoverController : UICollectionViewDelegate, UICollectionViewData
     }
     
     // 显示cell
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(EYEDiscoverCell.reuseIdentifier, forIndexPath: indexPath) as! EYEDiscoverCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EYEDiscoverCell.reuseIdentifier, for: indexPath) as! EYEDiscoverCell
         return cell
     }
     

@@ -11,7 +11,7 @@ import UIKit
 class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioning {
     private var fromVC : EYEVideoDetailController!
     private var toVC : EYEBaseViewController!
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
     
@@ -19,6 +19,10 @@ class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioni
         let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! EYEVideoDetailController
         let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! EYEBaseViewController
         let container = transitionContext.containerView()
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) as! EYEVideoDetailController
+        let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) as! EYEBaseViewController
+        let container = transitionContext.containerView
         self.fromVC = fromVC
         self.toVC = toVC
         
@@ -77,10 +81,10 @@ class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioni
             blurImageView.removeFromSuperview()
             blurView.removeFromSuperview()
             
-            fromVC.detailView.albumImageView.hidden = false
-            fromVC.detailView.blurImageView.hidden = false
-            fromVC.detailView.blurView.hidden = false
-            fromVC.detailView.bottomToolView.hidden = false
+            fromVC.detailView.albumImageView.isHidden = false
+            fromVC.detailView.blurImageView.isHidden = false
+            fromVC.detailView.blurView.isHidden = false
+            fromVC.detailView.bottomToolView.isHidden = false
             // 文字动画
             self.titleAnimation()
             // tabbar动画
@@ -88,7 +92,7 @@ class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioni
                 self.tabbarAnimation()
             }
             
-            transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         }
     }
     
@@ -99,7 +103,7 @@ class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioni
     private func tabbarAnimation() {
         // tabbar
         let tabbarSnapshotView = toVC.tabBarController?.tabBar
-        UIView.animateWithDuration(0.2, delay: 0, options: .CurveLinear, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear, animations: {
             tabbarSnapshotView?.y = UIConstant.SCREEN_HEIGHT - UIConstant.UI_TAB_HEIGHT
         }) { (_) in
         
@@ -108,7 +112,7 @@ class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioni
     
     
     private func titleAnimation() {
-        UIView.animateWithDuration(0.3) {
+        UIView.animate(withDuration: 0.3) {
             self.toVC.selectCell.titleLabel.alpha = 1
             self.toVC.selectCell.subTitleLabel.alpha = 1
         }

@@ -14,25 +14,25 @@ class EYEDiscoverDetailController: EYEBaseViewController, LoadingPresenter {
     //MARK: --------------------------- Life Cycle --------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         // 返回按钮
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem.barButtonItemWithImg(UIImage(named: "ic_action_back"), selectorImg: nil, target: self, action: #selector(EYEDiscoverDetailController.leftBtnDidClick))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.barButtonItemWithImg(image: UIImage(named: "ic_action_back"), selectorImg: nil, target: self, action: #selector(EYEDiscoverDetailController.leftBtnDidClick))
         // 添加headerView
         self.view.addSubview(headerView)
 
         // headerview点击
         headerView.headerViewTitleDidClick { [unowned self](targetBtn, index) in
             
-            self.itemDidClick(index)
+            self.itemDidClick(index: index)
         }
         
         // 默认选中第一个
-        itemDidClick(0)
+        itemDidClick(index: 0)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.interactivePopGestureRecognizer?.enabled = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     
     convenience init(title : String, categoryId : Int) {
@@ -43,7 +43,7 @@ class EYEDiscoverDetailController: EYEBaseViewController, LoadingPresenter {
     
     //MARK: --------------------------- Event response --------------------------
     @objc private func leftBtnDidClick() {
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     /**
@@ -70,9 +70,9 @@ class EYEDiscoverDetailController: EYEBaseViewController, LoadingPresenter {
         }
         self.addChildViewController(actionController)
         self.view.addSubview(actionController.view)
-        self.setupControllerFrame(actionController.view)
+        self.setupControllerFrame(view: actionController.view)
         // 动画
-        startAnimation(currentController, toVC: actionController)
+        startAnimation(fromVC: currentController, toVC: actionController)
     }
     
     //MARK: --------------------------- Private Methods --------------------------
@@ -87,7 +87,7 @@ class EYEDiscoverDetailController: EYEBaseViewController, LoadingPresenter {
     // 设置控制器frame
     private func startAnimation(fromVC: UIViewController? = nil, toVC: UIViewController) {
         toVC.view.alpha = 0
-        UIView.animateWithDuration(0.5, animations: {
+        UIView.animate(withDuration: 0.5, animations: {
             
             if let _ = fromVC {
                 fromVC!.view.alpha = 0
@@ -119,7 +119,7 @@ class EYEDiscoverDetailController: EYEBaseViewController, LoadingPresenter {
     private let titleArray = ["按时间排序", "分享排行榜"]
     private lazy var headerView : EYEPopularHeaderView = {
         let headerView = EYEPopularHeaderView(frame: CGRect(x: 0, y: UIConstant.UI_NAV_HEIGHT, width: UIConstant.SCREEN_WIDTH, height: UIConstant.UI_CHARTS_HEIGHT), titleArray: self.titleArray)
-        headerView.setupLineViewWidth(65)
+        headerView.setupLineViewWidth(width: 65)
         return headerView
     }()
 }

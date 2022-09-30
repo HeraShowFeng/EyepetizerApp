@@ -43,19 +43,19 @@ class EYEPlayerView: UIView {
         super.awakeFromNib()
         
         // 设置进度条属性
-        self.sliderView.setThumbImage(UIImage(named: "slider"), forState: .Normal)
+        self.sliderView.setThumbImage(UIImage(named: "slider"), for: .normal)
         self.insertSubview(self.progressView, belowSubview: self.sliderView)
-        self.sliderView.minimumTrackTintColor = UIColor.whiteColor()
-        self.sliderView.maximumTrackTintColor = UIColor(colorLiteralRed: 0.3, green: 0.3, blue: 0.3, alpha: 0.6)
+        self.sliderView.minimumTrackTintColor = UIColor.white
+        self.sliderView.maximumTrackTintColor = UIColor.init(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.6)
         
         // 设置缓存进度条属性
-        self.progressView.progressTintColor    = UIColor.whiteColor()
-        self.progressView.trackTintColor       = UIColor.clearColor()
+        self.progressView.progressTintColor    = UIColor.white
+        self.progressView.trackTintColor       = UIColor.clear
         
         // 设置快进快退label
         self.horizontalLabel.backgroundColor = UIColor(patternImage: UIImage(named: "Management_Mask")!)
         self.indicatorView.stopAnimating()
-        self.horizontalLabel.hidden = true
+        self.horizontalLabel.isHidden = true
         
         // 点击屏幕
         let tap = UITapGestureRecognizer(target: self, action: #selector(EYEPlayerView.tapAction))
@@ -66,7 +66,7 @@ class EYEPlayerView: UIView {
      加载view
      */
     class func playerView() -> EYEPlayerView {
-        return NSBundle.mainBundle().loadNibNamed("EYEPlayerView", owner: nil, options: nil).first as! EYEPlayerView
+        return Bundle.main.loadNibNamed("EYEPlayerView", owner: nil, options: nil)?.first as! EYEPlayerView
     }
     
     /**
@@ -75,19 +75,19 @@ class EYEPlayerView: UIView {
     @objc private func hiddenAnimation() {
         isShowCoverView = false
         
-        UIView.animateWithDuration(0.2, animations: {
-            self.topView.transform = CGAffineTransformMakeTranslation(0, -50)
-            self.topCoverView.transform = CGAffineTransformMakeTranslation(0, -50)
+        UIView.animate(withDuration: 0.2, animations: {
+            self.topView.transform = CGAffineTransform(translationX: 0, y: -50)
+            self.topCoverView.transform = CGAffineTransform(translationX: 0, y: -50)
             
-            self.bottomView.transform = CGAffineTransformMakeTranslation(0, 50)
-            self.bottomCoverView.transform = CGAffineTransformMakeTranslation(0, 50)
+            self.bottomView.transform = CGAffineTransform(translationX: 0, y: 50)
+            self.bottomCoverView.transform = CGAffineTransform(translationX: 0, y: 50)
         }) { (_) in
             
-            self.topView.hidden = true
-            self.topCoverView.hidden = true
+            self.topView.isHidden = true
+            self.topCoverView.isHidden = true
             
-            self.bottomCoverView.hidden = true
-            self.bottomView.hidden = true
+            self.bottomCoverView.isHidden = true
+            self.bottomView.isHidden = true
         }
     }
     
@@ -98,18 +98,18 @@ class EYEPlayerView: UIView {
         
         isShowCoverView = true
         
-        self.topView.hidden = false
-        self.topCoverView.hidden = false
+        self.topView.isHidden = false
+        self.topCoverView.isHidden = false
         
-        self.bottomCoverView.hidden = false
-        self.bottomView.hidden = false
+        self.bottomCoverView.isHidden = false
+        self.bottomView.isHidden = false
         
-        UIView.animateWithDuration(0.2, animations: {
-            self.topView.transform = CGAffineTransformIdentity
-            self.topCoverView.transform = CGAffineTransformIdentity
+        UIView.animate(withDuration: 0.2, animations: {
+            self.topView.transform = CGAffineTransform.identity
+            self.topCoverView.transform = CGAffineTransform.identity
             
-            self.bottomCoverView.transform = CGAffineTransformIdentity
-            self.bottomView.transform = CGAffineTransformIdentity
+            self.bottomCoverView.transform = CGAffineTransform.identity
+            self.bottomView.transform = CGAffineTransform.identity
         }) { [unowned self](_) in
             self.afterHidden()
         }
@@ -132,8 +132,8 @@ class EYEPlayerView: UIView {
      */
     private func afterHidden() {
         
-        NSObject.cancelPreviousPerformRequestsWithTarget(self, selector: #selector(EYEPlayerView.hiddenAnimation), object: nil)
-        self.performSelector(#selector(EYEPlayerView.hiddenAnimation), withObject: nil, afterDelay: 5.0)
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(EYEPlayerView.hiddenAnimation), object: nil)
+        self.perform(#selector(EYEPlayerView.hiddenAnimation), with: nil, afterDelay: 5.0)
     }
 
 

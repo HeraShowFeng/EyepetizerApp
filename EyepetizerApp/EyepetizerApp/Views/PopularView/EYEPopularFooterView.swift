@@ -26,8 +26,8 @@ class EYEPopularFooterView: UICollectionReusableView, Reusable {
     private lazy var titleLabel : UILabel = {
         var titleLabel = UILabel()
         titleLabel.text = "-The End-"
-        titleLabel.textColor = UIColor.blackColor()
-        titleLabel.textAlignment = .Center
+        titleLabel.textColor = UIColor.black
+        titleLabel.textAlignment = .center
         titleLabel.font = UIFont.customFont_Lobster()
         return titleLabel
     }()

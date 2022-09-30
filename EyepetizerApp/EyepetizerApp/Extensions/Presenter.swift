@@ -39,7 +39,7 @@ extension LoadingPresenter where Self: UIViewController {
      */
     func setLoaderViewHidden(hidden : Bool) {
         if let view = loaderView {
-            view.hidden = hidden
+            view.isHidden = hidden
             if hidden {
                 view.stopLoadingAnimation()
             } else {
@@ -78,7 +78,7 @@ extension MenuPresenter where Self: UIViewController {
      */
     func setupMenuBtn (type : EYEMenuBtnType = .None) {
         menuBtn = EYEMenuBtn(frame: CGRect(x: 0, y: 0, width: 40, height: 40), type: type)
-        menuBtn.addTarget(self, action: Selector("menuBtnDidClick"), forControlEvents: .TouchUpInside)
+        menuBtn.addTarget(self, action: Selector("menuBtnDidClick"), for: .touchUpInside)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: menuBtn)
     }
 }

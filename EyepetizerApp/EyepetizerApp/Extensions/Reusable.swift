@@ -14,8 +14,8 @@ public protocol Reusable: class {
 
 extension Reusable {
     static var reuseIdentifier : String {
-        return String(Self)
-    }  
+        return NSStringFromClass(Self.self)
+    }
 }
 
 public extension UICollectionView {
