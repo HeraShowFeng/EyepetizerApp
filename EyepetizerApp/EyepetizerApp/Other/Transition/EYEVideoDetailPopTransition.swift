@@ -15,10 +15,6 @@ class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioni
         return 0.3
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! EYEVideoDetailController
-        let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! EYEBaseViewController
-        let container = transitionContext.containerView()
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) as! EYEVideoDetailController
         let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) as! EYEBaseViewController
@@ -28,57 +24,57 @@ class EYEVideoDetailPopTransition: NSObject, UIViewControllerAnimatedTransitioni
         
         fromVC.detailView.backBtn.alpha = 0
         // 背景图片
-        let snapshotView = fromVC.detailView.albumImageView.snapshotViewAfterScreenUpdates(false)
-        snapshotView.frame = fromVC.detailView.albumImageView.frame
-        fromVC.detailView.albumImageView.hidden = true
-        fromVC.detailView.blurImageView.hidden = true
-        fromVC.detailView.blurView.hidden = true
-        fromVC.detailView.bottomToolView.hidden = true
+        let snapshotView = fromVC.detailView.albumImageView.snapshotView(afterScreenUpdates: false)
+        snapshotView?.frame = fromVC.detailView.albumImageView.frame
+        fromVC.detailView.albumImageView.isHidden = true
+        fromVC.detailView.blurImageView.isHidden = true
+        fromVC.detailView.blurView.isHidden = true
+        fromVC.detailView.bottomToolView.isHidden = true
         
         // 覆盖层
-        let cover = UIView(frame: snapshotView.frame)
-        cover.backgroundColor = UIColor.blackColor()
+        let cover = UIView(frame: snapshotView!.frame)
+        cover.backgroundColor = UIColor.black
         cover.alpha = 0
         
         // 模糊图片
-        let blurImageView = fromVC.detailView.blurImageView.snapshotViewAfterScreenUpdates(false)
-        blurImageView.frame = fromVC.detailView.blurImageView.frame
+        let blurImageView = fromVC.detailView.blurImageView.snapshotView(afterScreenUpdates: false)
+        blurImageView?.frame = fromVC.detailView.blurImageView.frame
         
-        let blurEffect : UIBlurEffect = UIBlurEffect(style: .Light)
+        let blurEffect : UIBlurEffect = UIBlurEffect(style: .light)
         let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = blurImageView.frame
+        blurView.frame = blurImageView!.frame
         // 设置tovc属性
-        toVC.view.frame = transitionContext.finalFrameForViewController(toVC)
-        toVC.selectCell.backgroundImageView.hidden = true
+        toVC.view.frame = transitionContext.finalFrame(for: toVC)
+        toVC.selectCell.backgroundImageView.isHidden = true
         toVC.selectCell.titleLabel.alpha = 0
         toVC.selectCell.subTitleLabel.alpha = 0
         
 //        container!.insertSubview(toVC.view, belowSubview: fromVC.view)
-        container?.addSubview(toVC.view)
-        container!.addSubview(snapshotView)
-        container?.addSubview(cover)
-        container?.addSubview(blurImageView)
-        container?.addSubview(blurView)
+        container.addSubview(toVC.view)
+        container.addSubview(snapshotView!)
+        container.addSubview(cover)
+        container.addSubview(blurImageView!)
+        container.addSubview(blurView)
         
-        UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, options: .curveEaseInOut, animations: { () -> Void in
             // 图片
-            let snapshotFrame = container!.convertRect(toVC.selectCell.backgroundImageView.frame, fromView: toVC.selectCell)
-            snapshotView.frame = snapshotFrame
+            let snapshotFrame = container.convert(toVC.selectCell.backgroundImageView.frame, from: toVC.selectCell)
+            snapshotView!.frame = snapshotFrame
             // 覆盖层
             cover.frame = snapshotFrame
             cover.alpha = 0.3
             
             // 模糊图片
-            blurImageView.frame = CGRect(x: 0, y: CGRectGetMaxY(snapshotFrame), width: CGRectGetWidth(snapshotFrame), height: 0)
-            blurView.frame = CGRect(x: 0, y: CGRectGetMaxY(snapshotFrame), width: CGRectGetWidth(snapshotFrame), height: 0)
+            blurImageView!.frame = CGRect(x: 0, y: snapshotFrame.maxY, width: snapshotFrame.width, height: 0)
+            blurView.frame = CGRect(x: 0, y: snapshotFrame.maxY, width: snapshotFrame.width, height: 0)
             
         }) { [unowned self](finish: Bool) -> Void in
-            toVC.selectCell.backgroundImageView.hidden = false
+            toVC.selectCell.backgroundImageView.isHidden = false
             fromVC.detailView.backBtn.alpha = 1
             
-            snapshotView.removeFromSuperview()
+            snapshotView!.removeFromSuperview()
             cover.removeFromSuperview()
-            blurImageView.removeFromSuperview()
+            blurImageView!.removeFromSuperview()
             blurView.removeFromSuperview()
             
             fromVC.detailView.albumImageView.isHidden = false

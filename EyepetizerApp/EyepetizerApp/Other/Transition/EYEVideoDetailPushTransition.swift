@@ -16,37 +16,37 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
         return 0.3
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let container = transitionContext.containerView()
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let container = transitionContext.containerView
         //1.获取动画的源控制器和目标控制器
-        let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! EYEBaseViewController
-        let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! EYEVideoDetailController
+        let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) as! EYEBaseViewController
+        let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) as! EYEVideoDetailController
         
         self.fromVC = fromVC
         self.toVC = toVC
         
         //2.创建一个 Cell 中 imageView 的截图，并把 imageView 隐藏，造成使用户以为移动的就是 imageView 的假象
-        let backgroundSnapshotView = fromVC.view.snapshotViewAfterScreenUpdates(false)
+        let backgroundSnapshotView = fromVC.view.snapshotView(afterScreenUpdates: false)
         // 图片
-        let snapshotView = fromVC.selectCell.backgroundImageView.snapshotViewAfterScreenUpdates(false)
-        snapshotView.frame = container!.convertRect(fromVC.selectCell.backgroundImageView.frame, fromView: fromVC.selectCell)
-        fromVC.selectCell.backgroundImageView.hidden = true
+        let snapshotView = fromVC.selectCell.backgroundImageView.snapshotView(afterScreenUpdates: false)
+        snapshotView?.frame = container.convert(fromVC.selectCell.backgroundImageView.frame, from: fromVC.selectCell)
+        fromVC.selectCell.backgroundImageView.isHidden = true
         // 覆盖层
-        let coverView = fromVC.selectCell.coverButton.snapshotViewAfterScreenUpdates(false)
-        coverView.frame = container!.convertRect(fromVC.selectCell.coverButton.frame, fromView: fromVC.selectCell)
+        let coverView = fromVC.selectCell.coverButton.snapshotView(afterScreenUpdates: false)
+        coverView?.frame = container.convert(fromVC.selectCell.coverButton.frame, from: fromVC.selectCell)
         
         // 模糊背景
         let blurImageView = UIImageView(image: fromVC.selectCell.backgroundImageView.image)
-        blurImageView.frame = CGRectMake(0, CGRectGetMaxY(snapshotView.frame), snapshotView.width, 0)
+        blurImageView.frame = CGRect.init(x: 0, y: snapshotView!.frame.maxY, width: snapshotView!.width, height: 0)
         
-        let blurEffect : UIBlurEffect = UIBlurEffect(style: .Light)
+        let blurEffect : UIBlurEffect = UIBlurEffect(style: .light)
         let blurView = UIVisualEffectView(effect: blurEffect)
         blurView.frame = blurImageView.frame
         
         // tabbar
         let tabbarSnapshotView = fromVC.tabBarController?.tabBar
         //3.设置目标控制器的位置，并把透明度设为0，在后面的动画中慢慢显示出来变为1
-        toVC.view.frame = transitionContext.finalFrameForViewController(toVC)
+        toVC.view.frame = transitionContext.finalFrame(for: toVC)
         toVC.detailView.albumImageView.alpha = 0
         toVC.detailView.blurImageView.alpha = 0
         toVC.detailView.backBtn.alpha = 0
@@ -55,21 +55,21 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
         toVC.detailView.describeLabel.alpha = 0
         toVC.detailView.bottomToolView.alpha = 0
         //4.都添加到 container 中。注意顺序不能错了
-        container!.addSubview(toVC.view)
-        container?.addSubview(backgroundSnapshotView)
-        container!.addSubview(snapshotView)
-        container?.addSubview(coverView)
-        container?.addSubview(blurImageView)
-        container?.addSubview(blurView)
+        container.addSubview(toVC.view)
+        container.addSubview(backgroundSnapshotView!)
+        container.addSubview(snapshotView!)
+        container.addSubview(coverView!)
+        container.addSubview(blurImageView)
+        container.addSubview(blurView)
         //5.执行动画
         toVC.detailView.albumImageView.layoutIfNeeded()
 
-        UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, options: .curveLinear, animations: { () -> Void in
             // 图片
-            snapshotView.frame = toVC.detailView.albumImageView.frame
+            snapshotView!.frame = toVC.detailView.albumImageView.frame
             // 覆盖层
-            coverView.frame = toVC.detailView.albumImageView.frame
-            coverView.alpha = 0
+            coverView!.frame = toVC.detailView.albumImageView.frame
+            coverView!.alpha = 0
             // 模糊背景
             blurImageView.frame = toVC.detailView.blurImageView.frame
             blurView.frame = toVC.detailView.blurImageView.frame
@@ -79,9 +79,9 @@ class EYEVideoDetailPushTransition: NSObject, UIViewControllerAnimatedTransition
             toVC.detailView.albumImageView.alpha = 1
             toVC.detailView.blurImageView.alpha = 1
             // 移除假象图片
-            backgroundSnapshotView.removeFromSuperview()
-            coverView.removeFromSuperview()
-            snapshotView.removeFromSuperview()
+            backgroundSnapshotView!.removeFromSuperview()
+            coverView!.removeFromSuperview()
+            snapshotView!.removeFromSuperview()
             blurImageView.removeFromSuperview()
             blurView.removeFromSuperview()
             // 其它动画

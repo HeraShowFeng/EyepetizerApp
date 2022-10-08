@@ -44,14 +44,14 @@ class EYEMenuBtn: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func titleRectForContentRect(contentRect: CGRect) -> CGRect {
+    override func titleRect(forContentRect contentRect: CGRect) -> CGRect {
         if type == .Date{
             return CGRect(x: self.height-UIConstant.UI_MARGIN_10, y: 0, width: self.width-self.height+UIConstant.UI_MARGIN_10, height: self.height)
         }
-        return CGRectZero
+        return CGRect.zero
     }
     
-    override func imageRectForContentRect(contentRect: CGRect) -> CGRect {
+    override func imageRect(forContentRect contentRect: CGRect) -> CGRect {
         return CGRect(x: 0, y: 0, width: self.height, height: self.height)
     }
 }

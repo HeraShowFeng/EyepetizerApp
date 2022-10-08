@@ -18,18 +18,18 @@ class EYEChoiceController: EYEBaseViewController, LoadingPresenter, MenuPresente
         // 设置loadview
         setupLoaderView()
         // 获取数据
-        getData(EYEAPIHeaper.API_Choice, params: ["date" : NSDate.getCurrentTimeStamp(), "num" : "7"])
-        setLoaderViewHidden(false)
+        getData(api: EYEAPIHeaper.API_Choice, params: ["date" : NSDate.getCurrentTimeStamp(), "num" : "7"])
+        setLoaderViewHidden(hidden: false)
         // 初始化菜单按钮
         setupMenuBtn()
         // 下拉刷新
         collectionView.headerViewPullToRefresh { [unowned self] in
-            self.getData(EYEAPIHeaper.API_Choice, params: ["date": NSDate.getCurrentTimeStamp(), "num": "7"])
+            self.getData(api: EYEAPIHeaper.API_Choice, params: ["date": NSDate.getCurrentTimeStamp(), "num": "7"])
         }
         // 上拉加载更多
         collectionView.footerViewPullToRefresh {[unowned self] in
             if let url = self.nextPageUrl {
-                self.getData(url)
+                self.getData(api: url)
             }
         }
     }

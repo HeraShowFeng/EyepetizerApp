@@ -31,7 +31,7 @@ class EYEDiscoverCell : UICollectionViewCell, Reusable {
     
     var model : EYEDiscoverModel! {
         didSet {
-            self.backgroundImageView.yy_setImageWithURL(NSURL(string: model.bgPicture)!, options: .ProgressiveBlur)
+            self.backgroundImageView.yy_setImage(with: NSURL.init(string: model.bgPicture) as URL?, options: .progressiveBlur)
             self.titleLabel.text = model.name
         }
     }

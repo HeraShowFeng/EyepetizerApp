@@ -36,10 +36,6 @@ class EYEVideoDetailController: UIViewController {
         self.title = "Eyepelizer"
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
-    
     //MARK: --------------------------- Event or Action --------------------------
     @objc private func leftBtnDidClick() {
         self.navigationController?.popViewController(animated: true)

@@ -99,11 +99,9 @@ class EYEPullToRefreshView: UIView {
         }
         
         let delayInSeconds:Double = 0.3
-        let popTime:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds));
-        
-        dispatch_after(popTime, dispatch_get_main_queue(), {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayInSeconds) {
             self.state = .Normal;
-        })
+        }
     }
     
    
@@ -267,7 +265,7 @@ class EYEPullToRefreshFooterView: EYEPullToRefreshView {
     /**
      监听contentsize
      */
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         // 这里分两种情况 1.contentSize 2.contentOffset
         
@@ -286,7 +284,7 @@ class EYEPullToRefreshFooterView: EYEPullToRefreshView {
                 return
             }
             
-            if self.scrollView.dragging {
+            if self.scrollView.isDragging {
                 let normal2pullingOffsetY =  happenOffsetY + self.frame.size.height
                 if state == .Normal && currentOffsetY > normal2pullingOffsetY {
                     state = .Pulling

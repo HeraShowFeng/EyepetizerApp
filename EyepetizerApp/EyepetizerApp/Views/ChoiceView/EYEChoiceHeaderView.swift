@@ -43,7 +43,7 @@ class EYEChoiceHeaderView: UICollectionReusableView, Reusable {
     var image : String? {
         didSet {
             if let _ = image {
-                self.imageView.yy_setImageWithURL(NSURL(string: image!)!, options: .ProgressiveBlur)
+                self.imageView.yy_setImage(with: NSURL(string: image!)! as URL, options: .progressiveBlur)
                 self.titleLabel.isHidden = true
                 self.imageView.isHidden = false
             } else {

@@ -205,14 +205,14 @@ class EYEVideoDetailView: UIView {
         /**
          文字的frame
          */
-        private override func titleRectForContentRect(contentRect: CGRect) -> CGRect {
+        override func titleRect(forContentRect contentRect: CGRect) -> CGRect {
             return CGRect(x: self.height-8, y: 0, width: self.width-self.height+8, height: self.height)
         }
         
         /**
          图片的frame
          */
-        private override func imageRectForContentRect(contentRect: CGRect) -> CGRect {
+        override func imageRect(forContentRect contentRect: CGRect) -> CGRect {
             return CGRect(x: 0, y: 8, width: self.height-16, height: self.height-16)
         }
         

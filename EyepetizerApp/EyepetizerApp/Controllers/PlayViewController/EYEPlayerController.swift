@@ -62,17 +62,9 @@ class EYEPlayerController: UIViewController {
         self.player.replaceCurrentItem(with: self.playerItem)
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
-    }
-    
-    override func shouldAutorotate() -> Bool {
-        return false
     }
     
     deinit {
@@ -208,15 +200,14 @@ class EYEPlayerController: UIViewController {
      slider结束滑动事件
      */
     @objc private func progressSliderTouchEnded(slider : UISlider) {
-        if self.player.status == .ReadyToPlay {
+        if self.player.status == .readyToPlay {
             // 继续开启timer
-            self.timer.fireDate = NSDate()
-            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
-            dispatch_after(delayTime, dispatch_get_main_queue()) {
-                self.playView.horizontalLabel.hidden = true
+            self.timer.fireDate = NSDate.init() as Date
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(NSEC_PER_SEC)) {
+                self.playView.horizontalLabel.isHidden = true
             }
             // 结束滑动时候把开始播放按钮改为播放状态
-            self.playView.startButton.selected = true
+            self.playView.startButton.isSelected = true
             self.isPauseByUser = false
             
             //计算出拖动的当前秒数
@@ -354,8 +345,7 @@ class EYEPlayerController: UIViewController {
         isBuffering = true
         // 需要先暂停一小会之后再播放，否则网络状况不好的时候时间在走，声音播放不出来
         self.player.pause()
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Double(NSEC_PER_SEC)) {
             // 如果此时用户已经暂停了，则不再需要开启播放了
             guard self.isBuffering == false else {
                 self.isBuffering = false
@@ -365,11 +355,10 @@ class EYEPlayerController: UIViewController {
             self.player.play()
             // 如果执行了play还是没有播放则说明还没有缓存好，则再次缓存一段时间
             self.isBuffering = false
-            if !self.playerItem.playbackLikelyToKeepUp {
+            if !self.playerItem.isPlaybackLikelyToKeepUp {
                 self.bufferingSomeSecond()
             }
         }
-        
     }
     
     //MARK: --------------------------- Getter and Setter --------------------------

@@ -20,12 +20,11 @@ class EYEDiscoverDetailShareController: UIViewController, LoadingPresenter {
         // 初始化url
         setupLoaderView()
         // 获取数据
-        getData(params: ["categoryId": categoryId])
-        setLoaderViewHidden(false)
+        setLoaderViewHidden(hidden: false)
         // 上拉加载更多
         collectionView.footerViewPullToRefresh { [unowned self] in
             if let url = self.nextURL {
-                self.getData(url, params: nil)
+                self.getData(api: url, params: nil)
             }
         }
     }

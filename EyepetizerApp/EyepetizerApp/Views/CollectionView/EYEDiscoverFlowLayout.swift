@@ -25,7 +25,7 @@ class EYEDiscoverFlowLayout : UICollectionViewFlowLayout {
     }
     
     // 滚动区域
-    override func collectionViewContentSize() -> CGSize {
+    override var collectionViewContentSize: CGSize {
         return CGSize(width: width, height: contentHeight)
     }
     
